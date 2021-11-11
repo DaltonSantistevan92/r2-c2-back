@@ -9,16 +9,27 @@ require_once 'models/usuarioModel.php';
 require_once 'models/personaModel.php';
 require_once 'models/representanteModel.php';
 require_once 'controllers/personaController.php';
+require_once 'controllers/docenteController.php';
+require_once 'controllers/docentecursoController.php';
+require_once 'controllers/representanteController.php';
 
 class UsuarioController{
 
     private $cors;
     private $personaController;
+    private $docenteCtrl;
+    private $docenteCursoCtrl;
+    private $representanteCtrl;
+
 
     public function __construct()
     {
         $this->cors = new Cors();
         $this->personaController = new PersonaController();
+        $this->docenteCtrl = new DocenteController();
+        $this->docenteCursoCtrl = new DocenteCursoController();
+        $this->representanteCtrl = new RepresentanteController();
+
     }
 
     public function getRepresentante(){
@@ -90,7 +101,7 @@ class UsuarioController{
             $other = $u->estado == 'A' ? 0 : 1;
 
             $botones = '<div class="btn-group">
-                            <button class="btn btn-purple btn-sm" onclick="editar_usuario(' . $u->id . ')">
+                            <button class="btn btn-primary btn-sm" onclick="editar_usuario(' . $u->id . ')">
                                 <i class="fa fa-edit fa-lg"></i>
                             </button>
                             <button class="btn ' . $clase . '" onclick="eliminar(' . $u->id . ',' . $other . ')">
@@ -178,9 +189,21 @@ class UsuarioController{
 
     public function guardar(Request $request)
     {
-
         $this->cors->corsJson();
         $user = $request->input('usuario');
+        $docenteData = $request->input('docente');
+        $docenteCursoData = $request->input('docentecurso');
+        $representanteData = $request->input('representante');
+
+        $periodo_id = intval($docenteCursoData->periodo_id);
+        $curso_id = intval($docenteCursoData->curso_id);
+        $paralelo_id = intval($docenteCursoData->paralelo_id);
+
+        $parentesco_id = intval($representanteData->parentesco_id);
+        $especial_id = intval($representanteData->especial_id);
+        $fecha_nac = $representanteData->fecha_nac;
+
+
         $response = [];
 
         if (!isset($user) || $user == null) {
@@ -192,36 +215,98 @@ class UsuarioController{
         } else {
             $responsePersona = $this->personaController->guardarPersona($request);
 
-            $id_pers = $responsePersona['persona']->id;
+            if ($responsePersona['status'] == false) {
+                $response = [
+                    'status' => false,
+                    'mensaje' => 'La persona ya se encuentra registrada en la base de datos',
+                    'usuario' => $responsePersona,
+                ];
+            } else {
+                $id_pers = $responsePersona['persona']->id;
 
-            $clave = $user->clave;
-            $encriptar = hash('sha256', $clave);
-            $user->rol_id = intval($user->rol_id);
+                $clave = $user->clave;
+                $encriptar = hash('sha256', $clave);
+                $user->rol_id = intval($user->rol_id);
 
-            $usuario = new Usuario;
-            $usuario->rol_id = $user->rol_id;
-            $usuario->persona_id = $id_pers;
-            $usuario->foto = $user->foto;
-            $usuario->clave = $encriptar;
-            $usuario->conf_clave = $encriptar;
-            $usuario->estado = 'A';
+                $usuario = new Usuario;
+                $usuario->rol_id = $user->rol_id;
+                $usuario->persona_id = $id_pers;
+                $usuario->foto = $user->foto;
+                $usuario->clave = $encriptar;
+                $usuario->conf_clave = $encriptar;
+                $usuario->estado = 'A';
 
-                if ($usuario->save()) {
-                    //verificamos un representante y guarda
+                $existeUsuario = Usuario::where('persona_id', $id_pers)->get()->first();
 
-                    $response = [
-                        'status' => true,
-                        'mensaje' => 'Se ha guardado el usuario',
-                        'usuario' => $usuario,
-                    ];
-                } else {
+                if ($existeUsuario) {
                     $response = [
                         'status' => false,
-                        'mensaje' => 'No se pudo guardar el usuario',
-                        'usuario' => null,
+                        'mensaje' => 'El usuario ya se encuentra registrado',
+                        'usuario' => $existeUsuario
                     ];
-                }
+                } else {
 
+                    if ($usuario->save()) {
+
+                        // registrar en la tabla docentes
+                        if ($user->rol_id == 2) {
+                            //guardar en la tabla docentes el persona_id
+                            $responseDocente = $this->docenteCtrl->guardar($docenteData, $id_pers);
+
+                            if ($responseDocente == false) {
+                                $response = [
+                                    'status' => false,
+                                    'mensaje' => 'El docente ya se encuentra registrado',
+                                    'usuario' => $responseDocente,
+                                ];
+                            } else {
+                                //recupere el id docente
+                                $id_doc = $responseDocente->id;
+
+                                //guardar en la tabla docente-curso
+                                $responseDoceCurso = $this->docenteCursoCtrl->guardar($docenteCursoData, $periodo_id, $id_doc, $curso_id, $paralelo_id);
+
+                                if ($responseDocente) {
+                                    $response = [
+                                        'status' => true,
+                                        'mensaje' => 'El docente se ha guardado',
+                                        'docente' => $responseDocente,
+                                        'docente_curso' => $responseDoceCurso
+                                    ];
+                                }
+                            }
+                        }else
+                        if($user->rol_id == 3){ //registra en la tabla representante
+                            
+                            $responseRepresentante = $this->representanteCtrl->guardar($representanteData, $id_pers,$parentesco_id,$especial_id,$fecha_nac);
+
+                            if ($responseRepresentante == false) {
+                                $response = [
+                                    'status' => false,
+                                    'mensaje' => 'El representante ya se encuentra registrado',
+                                    'usuario' => $responseRepresentante,
+                                ];
+                            }else{
+                                if ($responseRepresentante) {
+                                    $response = [
+                                        'status' => true,
+                                        'mensaje' => 'El representante se ha guardado',
+                                        'representante' => $responseRepresentante,
+                                    ];
+                                }
+                            }
+
+
+                        }
+                    }else {
+                        $response = [
+                            'status' => false,
+                            'mensaje' => 'No se pudo guardar',
+                            'usuario' => null,
+                        ];
+                    }
+                }
+            }
         }
         echo json_encode($response);
     }

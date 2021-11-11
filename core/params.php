@@ -7,4 +7,4 @@ define('USERNAME', 'root');
 define('PASSWORD', '');
 define('CHARSET', 'utf8');
 define('COLLACTION', 'utf8_unicode_ci');
-define('BASE', 'http://localhost/rosa-r/r2-c2-back/');
+define('BASE', 'http://192.168.100.213/escuela_2.0/r2-c2-back/');

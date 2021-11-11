@@ -15,7 +15,6 @@ class ParentescoController{
        
     }
 
-
     //lista como dataTable
     public function getParentesco(){
         $this->cors->corsJson();

@@ -31,9 +31,9 @@ class RepresentanteAccion
                 break;
 
             case 'post':
-                if ($ruta == '/representante/guardar') {
+                /* if ($ruta == '/representante/guardar') {
                     Route::post('/representante/guardar', 'representanteController@guardarRepresentante');
-                } else 
+                } else */ 
                 if($ruta == '/representante/editar'){
                     Route::post('/representante/editar', 'representanteController@editar');
                 }else 

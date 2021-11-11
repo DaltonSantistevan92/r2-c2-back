@@ -23,6 +23,23 @@ class RepresentanteController{
 
     }
 
+    public function guardar($representante,$id_persona,$id_parentesco,$id_especial,$fecha){
+    
+        if($representante){
+            $nuevoRepresentante = new Representante();
+            $nuevoRepresentante->persona_id = $id_persona;
+            $nuevoRepresentante->parentesco_id = $id_parentesco;
+            $nuevoRepresentante->especial_id = $id_especial;
+            $nuevoRepresentante->fecha_nac = $fecha;
+            $nuevoRepresentante->estado = 'A';
+            $nuevoRepresentante->save();
+            
+            return $nuevoRepresentante;
+        }else{
+            return null;
+        }
+    }
+
     public function buscar($params)
     {
         $this->cors->corsJson();
@@ -53,11 +70,10 @@ class RepresentanteController{
         $texto = strtolower($params['texto']);
         $response = [];
 
-
         $sql="SELECT r.id,u.id,p.cedula,p.nombres,p.apellidos,p.telefono,p.correo,p.sexo FROM personas p 
-        INNER JOIN  representante u ON u.persona_id=p.id
+        INNER JOIN  usuarios u ON u.persona_id=p.id
         inner join roles r on u.rol_id=3=r.id 
-        where p.estado = 'A' and (p.cedula like '$texto%' or p.nombres like '%$texto%' or p.apellidos like '%$texto%')";
+        where p.estado = 'A' and (p.cedula like '%$texto%' or p.nombres like '%$texto%' or p.apellidos like '%$texto%')";
 
         $array = $this->conexion->database::select($sql);
 
@@ -78,7 +94,7 @@ class RepresentanteController{
 
     }
 
-    public function guardarRepresentante(Request $request){
+    /* public function guardarRepresentante(Request $request){
         $this->cors->corsJson();
         $dataRepresentante = $request->input('representante');
         $dataRepresentante->persona_id = intval($dataRepresentante->persona_id);
@@ -126,7 +142,7 @@ class RepresentanteController{
 
         }
         echo json_encode($response);
-    }
+    } */
 
     public function dataTable()
     {
@@ -141,7 +157,7 @@ class RepresentanteController{
             $other = $r->estado == 'A' ? 0 : 1;
 
             $botones = '<div class="btn-group">
-                            <button class="btn btn-purple btn-sm" onclick="editar_representante(' . $r->id . ')">
+                            <button class="btn btn-primary btn-sm" onclick="editar_representante(' . $r->id . ')">
                                 <i class="fa fa-edit fa-lg"></i>
                             </button>
                             <button class="btn ' . $clase . '" onclick="eliminar(' . $r->id . ',' . $other . ')">

@@ -81,7 +81,7 @@ class PersonaController{
             } else {
                 $response = [
                     'status' => false,
-                    'mensaje' => 'No se pudo guardar :C',
+                    'mensaje' => 'No se pudo guardar ',
                     'persona' => null,
                 ];
             }

@@ -10,7 +10,7 @@ class Rol extends Model{
 
     public $timestamps = false;
     protected $table = "roles";
-    protected $filleable = ['rol', 'descripcion', 'estado'];
+    protected $filleable = ['rol','descripcion','estado'];
 
     public function usuario(){
         return $this->hasMany(Usuario::class);

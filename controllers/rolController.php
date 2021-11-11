@@ -39,7 +39,7 @@ class RolController{
         echo json_encode($response);
     }
 
-    public function guardar(Request $request){
+    public function guardar(Request $request){ 
         $this->cors->corsJson();
         $rolRequest = $request->input('rol');
         $rol = ucfirst($rolRequest->rol);
@@ -71,7 +71,7 @@ class RolController{
                 }else{
                     $response = [
                         'status' => false,
-                        'mensaje' => 'No se pudo guradar',
+                        'mensaje' => 'No se pudo guardar',
                         'rol' =>  null,
                     ];
                 }
