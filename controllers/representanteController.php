@@ -8,13 +8,11 @@ require_once 'app/helper.php';
 require_once 'models/representanteModel.php';
 require_once 'models/personaModel.php';
 
-
-
-class RepresentanteController{
+class RepresentanteController
+{
 
     private $cors;
     private $conexion;
-
 
     public function __construct()
     {
@@ -23,9 +21,10 @@ class RepresentanteController{
 
     }
 
-    public function guardar($representante,$id_persona,$id_parentesco,$id_especial,$fecha){
-    
-        if($representante){
+    public function guardar($representante, $id_persona, $id_parentesco, $id_especial, $fecha)
+    {
+
+        if ($representante) {
             $nuevoRepresentante = new Representante();
             $nuevoRepresentante->persona_id = $id_persona;
             $nuevoRepresentante->parentesco_id = $id_parentesco;
@@ -33,9 +32,9 @@ class RepresentanteController{
             $nuevoRepresentante->fecha_nac = $fecha;
             $nuevoRepresentante->estado = 'A';
             $nuevoRepresentante->save();
-            
+
             return $nuevoRepresentante;
-        }else{
+        } else {
             return null;
         }
     }
@@ -60,30 +59,59 @@ class RepresentanteController{
                 'representante' => null,
                 'persona' => null,
             ];
-            
+
         }
         echo json_encode($response);
     }
 
-    public function buscarRepresentante($params){
+    public function listar()
+    {
+        $this->cors->corsJson();
+        $response = [];
+
+        $representante = Representante::where('estado', 'A')->get();
+
+        foreach ($representante as $repre) {
+            $repre->persona;
+        }
+
+        if ($representante) {
+            $response = [
+                'status' => true,
+                'mensaje' => 'Si ahi datos',
+                'representante' => $representante,
+            ];
+        } else {
+            $response = [
+                'status' => false,
+                'mensaje' => 'No ahi datos',
+                'representante' => null,
+            ];
+        }
+        echo json_encode($response);
+
+    }
+
+    public function buscarRepresentante($params)
+    {
         $this->cors->corsJson();
         $texto = strtolower($params['texto']);
         $response = [];
 
-        $sql="SELECT r.id,u.id,p.cedula,p.nombres,p.apellidos,p.telefono,p.correo,p.sexo FROM personas p 
+        $sql = "SELECT r.id,u.id,p.cedula,p.nombres,p.apellidos,p.telefono,p.correo,p.sexo FROM personas p
         INNER JOIN  usuarios u ON u.persona_id=p.id
-        inner join roles r on u.rol_id=3=r.id 
+        inner join roles r on u.rol_id=3=r.id
         where p.estado = 'A' and (p.cedula like '%$texto%' or p.nombres like '%$texto%' or p.apellidos like '%$texto%')";
 
         $array = $this->conexion->database::select($sql);
 
-        if($array){
+        if ($array) {
             $response = [
                 'status' => true,
                 'mensaje' => 'Existen datos',
                 'representante' => $array,
             ];
-        }else{
+        } else {
             $response = [
                 'status' => false,
                 'mensaje' => 'No existen coincidencias',
@@ -94,62 +122,13 @@ class RepresentanteController{
 
     }
 
-    /* public function guardarRepresentante(Request $request){
-        $this->cors->corsJson();
-        $dataRepresentante = $request->input('representante');
-        $dataRepresentante->persona_id = intval($dataRepresentante->persona_id);
-        $dataRepresentante->parentesco_id = intval($dataRepresentante->parentesco_id);
-        $dataRepresentante->especial_id = intval($dataRepresentante->especial_id);
-
-        $persona_id = $dataRepresentante->persona_id;
-        $parenteco_id = $dataRepresentante->parentesco_id;
-        $especial_id = $dataRepresentante->especial_id; 
-
-        if($dataRepresentante){
-            //empieza
-            $nuevoRepresentante = new Representante();
-            $nuevoRepresentante->persona_id = $dataRepresentante->persona_id;
-            $nuevoRepresentante->parentesco_id = $dataRepresentante->parentesco_id;
-            $nuevoRepresentante->especial_id = $dataRepresentante->especial_id;
-            $nuevoRepresentante->fecha_nac = $dataRepresentante->fecha_nac;
-            $nuevoRepresentante->estado = 'A';
-
-            $existe = Representante::where('persona_id', $persona_id)->where('parentesco_id',$parenteco_id)->where('especial_id',$especial_id)->get()->first();
-            
-            if($existe){
-                $response = [
-                    'status' => false,
-                    'mensaje' => 'El representante ya existe',
-                    'representante' => null,
-                ];
-            }else{
-                //guarda representante
-                $nuevoRepresentante->save();
-
-                $response = [
-                    'status' => true,
-                    'mensaje' => 'Guardando los datos de representante',
-                    'representante' => $nuevoRepresentante,         
-                ];
-            }
-
-        }else{
-            $response = [
-                'status' => false,
-                'mensaje' => 'El representante ya existe',
-                'representante' => null,
-            ];
-
-        }
-        echo json_encode($response);
-    } */
-
     public function dataTable()
     {
         $this->cors->corsJson();
         $representante = Representante::where('estado', 'A')->orderBy('persona_id')->get();
 
-        $data = [];    $i = 1;
+        $data = [];
+        $i = 1;
 
         foreach ($representante as $r) {
             $icono = $r->estado == 'I' ? '<i class="fa fa-check-circle fa-lg"></i>' : '<i class="fa fa-trash fa-lg"></i>';
@@ -168,7 +147,7 @@ class RepresentanteController{
             $data[] = [
                 0 => $i,
                 1 => $r->persona->cedula,
-                2 => $r->persona->nombres .' '. $r->persona->apellidos,
+                2 => $r->persona->nombres . ' ' . $r->persona->apellidos,
                 3 => $r->persona->telefono,
                 4 => $r->persona->correo,
                 5 => $r->persona->sexo,
@@ -189,7 +168,8 @@ class RepresentanteController{
         echo json_encode($result);
     }
 
-    public function eliminar(Request $request){
+    public function eliminar(Request $request)
+    {
         $this->cors->corsJson();
         $representanteRequest = $request->input('representante');
         $id = intval($representanteRequest->id);
@@ -197,46 +177,46 @@ class RepresentanteController{
         $representante = Representante::find($id);
         $response = [];
 
-        if($representante){
+        if ($representante) {
             $representante->estado = 'I';
             $representante->save();
 
             $response = [
                 'status' => true,
-                'mensaje' => 'Se ha eliminado el representante', 
+                'mensaje' => 'Se ha eliminado el representante',
             ];
-        }else{
+        } else {
             $response = [
                 'status' => false,
-                'mensaje' => 'No se ha podido eliminar el representante', 
+                'mensaje' => 'No se ha podido eliminar el representante',
             ];
         }
         echo json_encode($response);
-    } 
+    }
 
     //post
-     public function editar(Request $request){    
-        $this->cors->corsJson();   
+    public function editar(Request $request)
+    {
+        $this->cors->corsJson();
         $repRequest = $request->input('representante');
-        
+
         $id = intval($repRequest->id);
         $persona_id = intval($repRequest->persona_id);
-        $parentesco_id  = intval($repRequest->parentesco_id);
-        $especial_id   = intval($repRequest->especial_id);
+        $parentesco_id = intval($repRequest->parentesco_id);
+        $especial_id = intval($repRequest->especial_id);
         $fecha_nac = $repRequest->fecha_nac;
 
-        $response = [];       
+        $response = [];
         $repre = Representante::find($id);
 
-        
-        if($repRequest){
-            if($repre){
+        if ($repRequest) {
+            if ($repre) {
                 $repre->persona_id = $persona_id;
                 $repre->parentesco_id = $parentesco_id;
                 $repre->especial_id = $especial_id;
                 $repre->fecha_nac = $fecha_nac;
                 $repre->estado = 'A';
-                
+
                 $persona = Persona::find($repre->persona_id);
                 $persona->nombres = ucfirst($repRequest->nombres);
                 $persona->apellidos = ucfirst($repRequest->apellidos);
@@ -244,23 +224,23 @@ class RepresentanteController{
                 $persona->correo = $repRequest->correo;
                 $persona->sexo = $repRequest->sexo;
                 $persona->save();
-                $repre->save();  
+                $repre->save();
 
                 $response = [
                     'status' => true,
                     'mensaje' => 'El Representante se ha actualizado',
                     'data' => $repre,
                 ];
-            }else {
+            } else {
                 $response = [
                     'status' => false,
                     'mensaje' => 'No se puede actualizar el representante',
                 ];
             }
-        }else{
+        } else {
             $response = [
                 'status' => false,
-                'mensaje' => 'No hay datos...!!'
+                'mensaje' => 'No hay datos...!!',
             ];
         }
         echo json_encode($response);

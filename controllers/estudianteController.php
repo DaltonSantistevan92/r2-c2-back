@@ -1,5 +1,8 @@
 <?php
+require_once 'app/app.php';
 require_once 'app/cors.php';
+require_once 'app/request.php';
+require_once 'core/conexion.php';
 require_once 'models/estudianteModel.php';
 require_once 'controllers/personaController.php';
 
@@ -8,12 +11,42 @@ class EstudianteController
 {
 
     private $cors;
+    private $conexion;
     private $personaController;
 
     public function __construct()
     {
         $this->cors = new Cors();
+        $this->conexion = new Conexion();
         $this->personaController = new PersonaController();
+    }
+
+    public function listar()
+    {
+        $this->cors->corsJson();
+        $response = [];
+
+        $estudiante = Estudiante::where('estado', 'A')->get();
+
+        foreach ($estudiante as $est) {
+            $est->persona;
+        }
+
+        if ($estudiante) {
+            $response = [
+                'status' => true,
+                'mensaje' => 'Si ahi datos',
+                'estudiante' => $estudiante,
+            ];
+        } else {
+            $response = [
+                'status' => false,
+                'mensaje' => 'No ahi datos',
+                'estudiante' => null,
+            ];
+        }
+        echo json_encode($response);
+
     }
 
     public function buscar($params)
@@ -195,6 +228,34 @@ class EstudianteController
             $response = [
                 'status' => false,
                 'mensaje' => 'No se ha podido eliminar el estudiante',
+            ];
+        }
+        echo json_encode($response);
+    }
+
+    public function buscarEstudiante($params)
+    {
+        $this->cors->corsJson();
+        $texto = ucfirst($params['texto']);
+        $response = [];
+        
+        $sql = "SELECT e.id, p.cedula, p.nombres, p.apellidos, p.telefono, p.correo FROM personas p 
+        INNER JOIN estudiantes e ON e.persona_id = p.id 
+        WHERE p.estado = 'A' and (p.cedula LIKE '%$texto%' OR p.nombres LIKE '%$texto%' OR p.apellidos LIKE '%$texto%')";
+
+        $array = $this->conexion->database::select($sql);
+
+        if ($array) {
+            $response = [
+                'status' => true,
+                'mensaje' => 'Existen datos',
+                'estudiantes' => $array,
+            ];
+        } else {
+            $response = [
+                'status' => false,
+                'mensaje' => 'No existen coincidencias',
+                'estudiantes' => null,
             ];
         }
         echo json_encode($response);

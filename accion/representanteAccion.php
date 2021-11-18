@@ -5,10 +5,7 @@ require_once 'app/error.php';
 class RepresentanteAccion
 {
 
-    public function __construct()
-    {
-        
-    }
+    public function __construct() {}
 
     //Configurar rutas y controllers
     public function index($metodo_http, $ruta, $params = null)
@@ -18,6 +15,9 @@ class RepresentanteAccion
             case 'get':
                 if ($ruta == '/representante/listar' && $params) {
                     Route::get('/representante/listar/:id', 'representanteController@buscar',$params);
+                }else 
+                if ($ruta == '/representante/listar') {
+                    Route::get('/representante/listar', 'representanteController@listar');
                 } else
                 if ($ruta == '/representante/datatable') {
                     Route::get('/representante/datatable', 'representanteController@dataTable');
@@ -25,15 +25,11 @@ class RepresentanteAccion
                 if ($ruta == '/representante/buscarRepresentante' & $params) {
                     Route::get('/representante/buscarRepresentante/:texto', 'representanteController@buscarRepresentante', $params);
                 }else {
-                    //$error = new Error();
                     ErrorClass::e(404, "La ruta no existe");
                 }
                 break;
 
-            case 'post':
-                /* if ($ruta == '/representante/guardar') {
-                    Route::post('/representante/guardar', 'representanteController@guardarRepresentante');
-                } else */ 
+            case 'post': 
                 if($ruta == '/representante/editar'){
                     Route::post('/representante/editar', 'representanteController@editar');
                 }else 

@@ -12,9 +12,12 @@ class EstudianteAccion{
             case 'get':
                 if($ruta == '/estudiante/listar' && $params) {
                     Route::get('/estudiante/listar/:id', 'estudianteController@buscar',$params);
-                }else
-                if($ruta == '/estudiante/listar'){
+                }else 
+                if ($ruta == '/estudiante/listar') {
                     Route::get('/estudiante/listar', 'estudianteController@listar');
+                }else 
+                if ($ruta == '/estudiante/buscarEstudiante' && $params) {
+                    Route::get('/estudiante/buscarEstudiante/:texto', 'estudianteController@buscarEstudiante', $params);
                 }else
                 if($ruta == '/estudiante/datatable'){
                     Route::get('/estudiante/datatable', 'estudianteController@datatable');
@@ -32,9 +35,6 @@ class EstudianteAccion{
                     Route::post('/estudiante/eliminar', 'estudianteController@eliminar');
                 }
                 break;
-
-            
-
         }
     }
 }

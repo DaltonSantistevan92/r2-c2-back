@@ -5,6 +5,8 @@ require_once 'core/conexion.php';
 require_once 'models/personaModel.php';
 require_once 'models/parentescoModel.php';
 require_once 'models/especialModel.php';
+require_once 'models/ticketModel.php';
+
 
 
 use Illuminate\Database\Eloquent\Model;
@@ -26,5 +28,10 @@ class Representante extends Model{
 
     public function especial(){
         return $this->belongsTo(Especial::class);
-    } 
+    }
+    
+    //uno a muchos
+    public function ticket(){
+        return $this->hasMany(Ticket::class);
+    }
 }
