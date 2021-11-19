@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.1.0
+-- version 5.1.1
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 11-11-2021 a las 10:46:57
--- Versión del servidor: 10.4.18-MariaDB
--- Versión de PHP: 7.3.27
+-- Tiempo de generación: 19-11-2021 a las 07:13:52
+-- Versión del servidor: 10.4.21-MariaDB
+-- Versión de PHP: 7.4.25
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -20,6 +20,34 @@ SET time_zone = "+00:00";
 --
 -- Base de datos: `db_escuela`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `abastecer`
+--
+
+CREATE TABLE `abastecer` (
+  `id` int(11) NOT NULL,
+  `proveedor_id` int(11) DEFAULT NULL,
+  `usuario_id` int(11) DEFAULT NULL,
+  `codigo` varchar(50) DEFAULT NULL,
+  `fecha` date DEFAULT NULL,
+  `estado` char(1) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `abastecer`
+--
+
+INSERT INTO `abastecer` (`id`, `proveedor_id`, `usuario_id`, `codigo`, `fecha`, `estado`, `created_at`, `updated_at`) VALUES
+(10, 1, 2, '00001', '2021-11-18', 'A', '2021-11-19 04:28:10', '2021-11-19 04:28:10'),
+(11, 1, 2, '00002', '2021-11-18', 'A', '2021-11-19 04:28:40', '2021-11-19 04:28:40'),
+(12, 1, 2, '00003', '2021-11-18', 'A', '2021-11-19 04:48:41', '2021-11-19 04:48:41'),
+(13, 1, 2, '00004', '2021-11-18', 'A', '2021-11-19 04:49:50', '2021-11-19 04:49:50'),
+(14, 1, 2, '00005', '2021-11-19', 'A', '2021-11-19 05:57:23', '2021-11-19 05:57:23');
 
 -- --------------------------------------------------------
 
@@ -60,6 +88,44 @@ CREATE TABLE `cursos` (
 
 INSERT INTO `cursos` (`id`, `curso`, `capacidad`, `estado`) VALUES
 (1, 'Primer Año ', 20, 'A');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `detalle_abastecer`
+--
+
+CREATE TABLE `detalle_abastecer` (
+  `id` int(11) NOT NULL,
+  `abastecer_id` int(11) DEFAULT NULL,
+  `producto_id` int(11) DEFAULT NULL,
+  `num_caja` int(11) DEFAULT NULL,
+  `cantidad` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `detalle_abastecer`
+--
+
+INSERT INTO `detalle_abastecer` (`id`, `abastecer_id`, `producto_id`, `num_caja`, `cantidad`) VALUES
+(5, 10, 35, 5, 120),
+(6, 11, 35, 1, 24),
+(7, 12, 36, 2, 48),
+(8, 13, 36, 1, 24),
+(9, 14, 29, 2, 48);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `detalle_entrega`
+--
+
+CREATE TABLE `detalle_entrega` (
+  `id` int(11) NOT NULL,
+  `entrega_id` int(11) DEFAULT NULL,
+  `producto_id` int(11) DEFAULT NULL,
+  `cantidad` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -109,6 +175,21 @@ INSERT INTO `docente_curso` (`id`, `periodo_id`, `docente_id`, `curso_id`, `para
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `entregas`
+--
+
+CREATE TABLE `entregas` (
+  `id` int(11) NOT NULL,
+  `ticket_id` int(11) DEFAULT NULL,
+  `usuario_id` int(11) DEFAULT NULL,
+  `fecha` date DEFAULT NULL,
+  `hora` date DEFAULT NULL,
+  `codigo` varchar(50) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `especiales`
 --
 
@@ -144,7 +225,44 @@ CREATE TABLE `estudiantes` (
 --
 
 INSERT INTO `estudiantes` (`id`, `persona_id`, `estado`) VALUES
-(1, 22, 'A');
+(1, 22, 'A'),
+(2, 23, 'A'),
+(3, 26, 'A');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `horarios_atencion`
+--
+
+CREATE TABLE `horarios_atencion` (
+  `id` int(11) NOT NULL,
+  `hora_inicio` time DEFAULT NULL,
+  `hora_fin` time DEFAULT NULL,
+  `estado` char(1) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `horarios_atencion`
+--
+
+INSERT INTO `horarios_atencion` (`id`, `hora_inicio`, `hora_fin`, `estado`) VALUES
+(1, '07:30:00', '12:00:00', 'A'),
+(2, '13:00:00', '17:00:00', 'A');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `inventario`
+--
+
+CREATE TABLE `inventario` (
+  `id` int(11) NOT NULL,
+  `movimiento_id` int(11) DEFAULT NULL,
+  `cantidad` int(11) DEFAULT NULL,
+  `disponible` char(1) DEFAULT NULL,
+  `total` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 
@@ -171,8 +289,8 @@ INSERT INTO `menus` (`id`, `id_padre`, `nombre`, `url`, `icono`, `pos`, `estado`
 (2, 0, 'Gestión de usuarios', '#', 'fas fa-user', 1, 'A'),
 (3, 0, 'Administración', '#', 'fas fa-school', 2, 'A'),
 (4, 0, 'Tickets', '#', 'fas fa-ticket-alt', 3, 'A'),
-(5, 0, 'Reportes', '#', 'fas fa-chart-area', 4, 'A'),
-(6, 0, 'Nosotros', '#', 'fa fa-book', 5, 'A'),
+(5, 0, 'Reportes', '#', 'fas fa-chart-area', 5, 'A'),
+(6, 0, 'Nosotros', '#', 'fa fa-book', 6, 'A'),
 (7, 1, 'Dashboard', 'inicio/administrador', '#', 1, 'A'),
 (8, 1, 'Dashboard', 'inicio/docente', '#', 2, 'A'),
 (9, 1, 'Representante', 'inicio/representante', '#', 3, 'A'),
@@ -191,8 +309,55 @@ INSERT INTO `menus` (`id`, `id_padre`, `nombre`, `url`, `icono`, `pos`, `estado`
 (22, 6, 'Historia', 'nosotros/historia', '#', 1, 'A'),
 (23, 6, 'Misión y Visión', 'nosotros/mision', '#', 2, 'A'),
 (24, 6, 'Autoridades', 'nosotros/autoridades', '#', 3, 'A'),
-(25, 3, 'Listar Estudiantes', 'administracion/listarestudiante', '#', 4, 'A'),
-(26, 3, 'Listar Docente', 'administracion/docentes', '#', 6, 'A');
+(25, 3, 'Listar Estudiantes', 'administracion/listarestudiante', '#', 4, 'I'),
+(26, 3, 'Listar Docente', 'administracion/docentes', '#', 6, 'A'),
+(28, 4, 'Tickets Entregados', 'ticket/atendidos', '#', 4, 'A'),
+(29, 0, 'Gestión de Produtos', '#', 'fas fa-archive', 4, 'A'),
+(30, 29, 'Abastecimiento', 'gestion/abastecimiento', '#', 0, 'A'),
+(31, 29, 'Entregas', 'gestion/entrega', '#', 1, 'A');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `movimientos`
+--
+
+CREATE TABLE `movimientos` (
+  `id` int(11) NOT NULL,
+  `entrega_id` int(11) DEFAULT NULL,
+  `usuario_id` int(11) DEFAULT NULL,
+  `tipo` char(1) DEFAULT NULL,
+  `fecha` date DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `ordenes`
+--
+
+CREATE TABLE `ordenes` (
+  `id` int(11) NOT NULL,
+  `num_orden` varchar(50) DEFAULT NULL,
+  `tipo` varchar(25) DEFAULT NULL,
+  `estado` char(1) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `ordenes`
+--
+
+INSERT INTO `ordenes` (`id`, `num_orden`, `tipo`, `estado`) VALUES
+(1, '00001', 'ticket', 'A'),
+(2, '00002', 'ticket', 'A'),
+(3, '00003', 'ticket', 'A'),
+(4, '00004', 'ticket', 'A'),
+(5, '00005', 'ticket', 'A'),
+(9, '00001', 'abastecer', 'A'),
+(10, '00002', 'abastecer', 'A'),
+(11, '00003', 'abastecer', 'A'),
+(12, '00004', 'abastecer', 'A'),
+(13, '00005', 'abastecer', 'A');
 
 -- --------------------------------------------------------
 
@@ -258,8 +423,8 @@ CREATE TABLE `periodos` (
 --
 
 INSERT INTO `periodos` (`id`, `detalle`, `desde`, `hasta`, `definir`, `estado`, `created_at`, `updated_at`) VALUES
-(1, '2021', 2021, 2022, 'S', 'A', '2021-10-14 04:57:02', '2021-11-10 21:31:14'),
-(2, '2020', 2020, 2021, 'N', 'A', '2021-10-14 07:22:11', '2021-11-10 21:29:39');
+(1, '2021', 2021, 2022, 'S', 'A', '2021-10-14 04:57:02', '2021-11-17 05:49:45'),
+(2, '2020', 2020, 2021, 'N', 'A', '2021-10-14 07:22:11', '2021-11-16 04:29:42');
 
 -- --------------------------------------------------------
 
@@ -322,7 +487,18 @@ INSERT INTO `permisos` (`id`, `rol_id`, `menu_id`, `activo`, `estado`) VALUES
 (40, 1, 25, 'S', 'A'),
 (41, 2, 25, 'S', 'A'),
 (42, 1, 26, 'S', 'A'),
-(43, 2, 26, 'S', 'A');
+(43, 2, 26, 'S', 'A'),
+(44, 1, 4, 'N', 'I'),
+(45, 1, 16, 'S', 'I'),
+(46, 1, 17, 'S', 'I'),
+(47, 1, 18, 'S', 'I'),
+(48, 2, 4, 'S', 'A'),
+(49, 2, 16, 'S', 'A'),
+(50, 2, 17, 'S', 'A'),
+(51, 2, 28, 'S', 'A'),
+(52, 2, 29, 'S', 'A'),
+(53, 2, 30, 'S', 'A'),
+(54, 2, 31, 'S', 'A');
 
 -- --------------------------------------------------------
 
@@ -351,7 +527,11 @@ INSERT INTO `personas` (`id`, `cedula`, `nombres`, `apellidos`, `telefono`, `cor
 (15, '2400454720', 'Manuel', 'Sanchez', '0987885841', 'manuel@hotmail.es', 'M', 'A'),
 (18, '2400254039', 'Victoria', 'Perez', '0989655556', 'victoria@hotmail.es', 'F', 'A'),
 (20, '0927514406', 'Victor', 'Suarez', '0987454544', 'victor@gmail.com', 'M', 'A'),
-(22, '0928141076', 'Juan', 'Gonzalez', '0989646161', 'juangon@gmail.com', 'M', 'A');
+(22, '0928141076', 'Juan', 'Gonzalez', '0989646161', 'juangon@gmail.com', 'M', 'A'),
+(23, '0928020874', 'Richard', 'Suarez', '0987656526', 'richard@gmail.com', 'M', 'A'),
+(24, '2450044405', 'Narcisa', 'Perez', '0987623063', 'narcisa@outlook.com', 'F', 'A'),
+(25, '2400333023', 'Pablo', 'Sanchez', '0988126922', 'pablo@gmail.com', 'M', 'A'),
+(26, '0926462367', 'Joselyn', 'De La Cruz', '0984226258', 'joselyn@gmail.com', 'F', 'A');
 
 -- --------------------------------------------------------
 
@@ -363,9 +543,11 @@ CREATE TABLE `productos` (
   `id` int(11) NOT NULL,
   `categoria_id` int(11) DEFAULT NULL,
   `nombre` varchar(25) DEFAULT NULL,
+  `caja` int(11) DEFAULT NULL,
   `peso` varchar(10) DEFAULT NULL,
   `stock` int(11) DEFAULT NULL,
   `descripcion` text DEFAULT NULL,
+  `img` varchar(200) DEFAULT NULL,
   `fecha_caducidad` date DEFAULT NULL,
   `estado` char(1) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -374,15 +556,40 @@ CREATE TABLE `productos` (
 -- Volcado de datos para la tabla `productos`
 --
 
-INSERT INTO `productos` (`id`, `categoria_id`, `nombre`, `peso`, `stock`, `descripcion`, `fecha_caducidad`, `estado`) VALUES
-(1, 1, 'Leche', '50 g', 20, 'Todos', '2021-12-31', 'A'),
-(2, 2, 'Literatura', '100 g', 25, 'Todos los cursos', '0000-00-00', 'A'),
-(3, 1, 'Galletas', '50 g', 50, '', '2021-12-02', 'A'),
-(4, 2, 'Matemáticas', '200 g', 10, 'Perfecto ', '0000-00-00', 'A'),
-(5, 2, 'Sociales', '500 g', 16, 'Noveno', '0000-00-00', 'A'),
-(6, 2, 'Ingles', '500 g', 30, 'Todos los cursos', '0000-00-00', 'A'),
-(7, 1, 'Barra ', '50 g', 15, '', '2021-12-24', 'A'),
-(8, 2, 'Fisica', '500 g', 15, 'Decimo', '0000-00-00', 'A');
+INSERT INTO `productos` (`id`, `categoria_id`, `nombre`, `caja`, `peso`, `stock`, `descripcion`, `img`, `fecha_caducidad`, `estado`) VALUES
+(1, 1, 'Leche', 1, '50 g', 24, 'Todos', 'default_product.jpg', '2021-12-31', 'A'),
+(2, 2, 'Literatura', 2, '100 g', 48, 'Todos los cursos', 'default_product.jpg', '0000-00-00', 'A'),
+(3, 1, 'Galletas', 3, '50 g', 72, '', 'default_product.jpg', '2021-12-02', 'A'),
+(4, 2, 'Matemáticas ', 1, '200 g', 24, 'Perfecto ', 'default_product.jpg', '0000-00-00', 'A'),
+(5, 2, 'Sociales', 2, '500 g', 48, 'Noveno', 'default_product.jpg', '0000-00-00', 'A'),
+(6, 2, 'Ingles', 3, '500 g', 72, 'Todos los cursos', 'default_product.jpg', '0000-00-00', 'A'),
+(7, 1, 'Barra ', 1, '50 g', 24, '', 'default_product.jpg', '2021-12-24', 'A'),
+(8, 2, 'Fisica', 2, '500 g', 48, 'Decimo', 'default_product.jpg', '0000-00-00', 'A'),
+(9, 1, 'Colada', 3, '500 g', 72, 'Colada varios sabores', 'default_product.jpg', '2022-02-18', 'A'),
+(29, 1, 'Pruebaaaaa ', 2, '500mg', 48, 'Bvg', 'depositphotos_14966757-stock-photo-group-of-high-school-students.jpg', '2022-01-21', 'A'),
+(30, 1, 'Vrdf', 3, 'rfr', 72, 'Vgf', 'user-default.jpg', '2022-02-26', 'A'),
+(31, 1, 'prueba2', 0, 'rfr', 0, 'Vcv', 'radiador.jpg', '2021-11-19', 'A'),
+(35, 1, 'prueba', 6, 'ggg', 144, 'Gggg', 'banner.jpg', '2022-05-26', 'A'),
+(36, 1, 'Barra de cereales', 3, '100g', 72, 'Varios sabores', 'filtro.JPG', '2022-01-22', 'A');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `proveedores`
+--
+
+CREATE TABLE `proveedores` (
+  `id` int(11) NOT NULL,
+  `razon_social` varchar(50) DEFAULT NULL,
+  `estado` char(1) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `proveedores`
+--
+
+INSERT INTO `proveedores` (`id`, `razon_social`, `estado`) VALUES
+(1, 'SICAE', 'A');
 
 -- --------------------------------------------------------
 
@@ -404,7 +611,9 @@ CREATE TABLE `representantes` (
 --
 
 INSERT INTO `representantes` (`id`, `persona_id`, `parentesco_id`, `especial_id`, `fecha_nac`, `estado`) VALUES
-(7, 20, 1, 3, '1980-11-13', 'A');
+(7, 20, 1, 3, '1980-11-13', 'A'),
+(8, 24, 3, 3, '1990-07-17', 'A'),
+(9, 25, 1, 3, '1990-11-24', 'A');
 
 -- --------------------------------------------------------
 
@@ -427,6 +636,57 @@ INSERT INTO `roles` (`id`, `rol`, `descripcion`, `estado`) VALUES
 (1, 'Administrador', 'admin', 'A'),
 (2, 'Docente guia', 'docen', 'A'),
 (3, 'Representante', 'repre', 'A');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `status`
+--
+
+CREATE TABLE `status` (
+  `id` int(11) NOT NULL,
+  `detalle` varchar(25) DEFAULT NULL,
+  `estado` char(1) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `status`
+--
+
+INSERT INTO `status` (`id`, `detalle`, `estado`) VALUES
+(1, 'Pendiente', 'A'),
+(2, 'Entregados', 'A');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `tickets`
+--
+
+CREATE TABLE `tickets` (
+  `id` int(11) NOT NULL,
+  `estudiante_id` int(11) DEFAULT NULL,
+  `representante_id` int(11) DEFAULT NULL,
+  `horario_atencion_id` int(11) DEFAULT NULL,
+  `codigo` varchar(5) DEFAULT NULL,
+  `fecha` date DEFAULT NULL,
+  `fecha_entrega` date DEFAULT NULL,
+  `privilegio` char(1) DEFAULT 'N',
+  `orden` varchar(10) DEFAULT NULL,
+  `status_id` int(11) DEFAULT NULL,
+  `estado` char(1) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Volcado de datos para la tabla `tickets`
+--
+
+INSERT INTO `tickets` (`id`, `estudiante_id`, `representante_id`, `horario_atencion_id`, `codigo`, `fecha`, `fecha_entrega`, `privilegio`, `orden`, `status_id`, `estado`) VALUES
+(1, 2, 7, 1, '13808', '2021-11-17', '2021-11-19', 'N', '00001', 2, 'A'),
+(2, 1, 8, 2, '65c5f', '2021-11-17', '2021-11-18', 'N', '00002', 2, 'A'),
+(3, 1, 7, 1, '72d99', '2021-11-17', '2021-11-22', 'N', '00003', 1, 'A'),
+(4, 3, 9, 1, '5555d', '2021-11-17', '2021-11-24', 'N', '00004', 2, 'A'),
+(5, 2, 9, 1, '0283f', '2021-11-18', '2021-11-27', 'N', '00005', 2, 'A');
 
 -- --------------------------------------------------------
 
@@ -454,11 +714,21 @@ INSERT INTO `usuarios` (`id`, `rol_id`, `persona_id`, `foto`, `clave`, `conf_cla
 (1, 1, 1, 'Rosa.png', '93fa3e4624676f2e9aa143911118b4547087e9b6e0b6076f2e1027d7a2da2b0a', '93fa3e4624676f2e9aa143911118b4547087e9b6e0b6076f2e1027d7a2da2b0a', 'A', '2021-04-28 21:13:07', '2021-10-12 06:07:05'),
 (2, 2, 2, 'default.png', '93fa3e4624676f2e9aa143911118b4547087e9b6e0b6076f2e1027d7a2da2b0a', '93fa3e4624676f2e9aa143911118b4547087e9b6e0b6076f2e1027d7a2da2b0a', 'A', '2021-04-28 21:13:44', '2021-04-28 21:13:44'),
 (16, 2, 15, 'user-default.jpg', '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', 'A', '2021-11-10 22:22:47', '2021-11-10 22:45:13'),
-(21, 3, 20, 'user-default.jpg', '93fa3e4624676f2e9aa143911118b4547087e9b6e0b6076f2e1027d7a2da2b0a', '93fa3e4624676f2e9aa143911118b4547087e9b6e0b6076f2e1027d7a2da2b0a', 'A', '2021-11-10 23:47:29', '2021-11-10 23:47:29');
+(21, 3, 20, 'user-default.jpg', '93fa3e4624676f2e9aa143911118b4547087e9b6e0b6076f2e1027d7a2da2b0a', '93fa3e4624676f2e9aa143911118b4547087e9b6e0b6076f2e1027d7a2da2b0a', 'A', '2021-11-10 23:47:29', '2021-11-10 23:47:29'),
+(22, 3, 24, 'user-default.jpg', '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', 'A', '2021-11-17 07:41:12', '2021-11-17 07:41:12'),
+(23, 3, 25, 'user-default.jpg', '93fa3e4624676f2e9aa143911118b4547087e9b6e0b6076f2e1027d7a2da2b0a', '93fa3e4624676f2e9aa143911118b4547087e9b6e0b6076f2e1027d7a2da2b0a', 'A', '2021-11-18 02:43:22', '2021-11-18 02:43:22');
 
 --
 -- Índices para tablas volcadas
 --
+
+--
+-- Indices de la tabla `abastecer`
+--
+ALTER TABLE `abastecer`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_abas_prove` (`proveedor_id`),
+  ADD KEY `fk_abas_usu` (`usuario_id`);
 
 --
 -- Indices de la tabla `categorias`
@@ -471,6 +741,22 @@ ALTER TABLE `categorias`
 --
 ALTER TABLE `cursos`
   ADD PRIMARY KEY (`id`);
+
+--
+-- Indices de la tabla `detalle_abastecer`
+--
+ALTER TABLE `detalle_abastecer`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_deta_abaste` (`abastecer_id`),
+  ADD KEY `fk_deta_prod` (`producto_id`);
+
+--
+-- Indices de la tabla `detalle_entrega`
+--
+ALTER TABLE `detalle_entrega`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_det_entre` (`entrega_id`),
+  ADD KEY `fk_det_prod` (`producto_id`);
 
 --
 -- Indices de la tabla `docentes`
@@ -490,6 +776,14 @@ ALTER TABLE `docente_curso`
   ADD KEY `fk_dc_paralelo` (`paralelo_id`);
 
 --
+-- Indices de la tabla `entregas`
+--
+ALTER TABLE `entregas`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_entre_ticket` (`ticket_id`),
+  ADD KEY `fk_entre_usua` (`usuario_id`);
+
+--
 -- Indices de la tabla `especiales`
 --
 ALTER TABLE `especiales`
@@ -503,9 +797,36 @@ ALTER TABLE `estudiantes`
   ADD KEY `fk_estu_persona` (`persona_id`);
 
 --
+-- Indices de la tabla `horarios_atencion`
+--
+ALTER TABLE `horarios_atencion`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indices de la tabla `inventario`
+--
+ALTER TABLE `inventario`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_invent_movim` (`movimiento_id`);
+
+--
 -- Indices de la tabla `menus`
 --
 ALTER TABLE `menus`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indices de la tabla `movimientos`
+--
+ALTER TABLE `movimientos`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_movi_entrega` (`entrega_id`),
+  ADD KEY `fk_movi_usua` (`usuario_id`);
+
+--
+-- Indices de la tabla `ordenes`
+--
+ALTER TABLE `ordenes`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -548,6 +869,12 @@ ALTER TABLE `productos`
   ADD KEY `fk_producto_categoria` (`categoria_id`);
 
 --
+-- Indices de la tabla `proveedores`
+--
+ALTER TABLE `proveedores`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indices de la tabla `representantes`
 --
 ALTER TABLE `representantes`
@@ -563,6 +890,22 @@ ALTER TABLE `roles`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indices de la tabla `status`
+--
+ALTER TABLE `status`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indices de la tabla `tickets`
+--
+ALTER TABLE `tickets`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_tick_hor_aten` (`horario_atencion_id`),
+  ADD KEY `fk_tick_estudi` (`estudiante_id`),
+  ADD KEY `fk_tick_repres` (`representante_id`),
+  ADD KEY `fk_tick_status` (`status_id`);
+
+--
 -- Indices de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
@@ -573,6 +916,12 @@ ALTER TABLE `usuarios`
 --
 -- AUTO_INCREMENT de las tablas volcadas
 --
+
+--
+-- AUTO_INCREMENT de la tabla `abastecer`
+--
+ALTER TABLE `abastecer`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT de la tabla `categorias`
@@ -587,6 +936,18 @@ ALTER TABLE `cursos`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
+-- AUTO_INCREMENT de la tabla `detalle_abastecer`
+--
+ALTER TABLE `detalle_abastecer`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+
+--
+-- AUTO_INCREMENT de la tabla `detalle_entrega`
+--
+ALTER TABLE `detalle_entrega`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT de la tabla `docentes`
 --
 ALTER TABLE `docentes`
@@ -599,6 +960,12 @@ ALTER TABLE `docente_curso`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
+-- AUTO_INCREMENT de la tabla `entregas`
+--
+ALTER TABLE `entregas`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT de la tabla `especiales`
 --
 ALTER TABLE `especiales`
@@ -608,13 +975,37 @@ ALTER TABLE `especiales`
 -- AUTO_INCREMENT de la tabla `estudiantes`
 --
 ALTER TABLE `estudiantes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT de la tabla `horarios_atencion`
+--
+ALTER TABLE `horarios_atencion`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT de la tabla `inventario`
+--
+ALTER TABLE `inventario`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT de la tabla `menus`
 --
 ALTER TABLE `menus`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+
+--
+-- AUTO_INCREMENT de la tabla `movimientos`
+--
+ALTER TABLE `movimientos`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `ordenes`
+--
+ALTER TABLE `ordenes`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT de la tabla `paralelos`
@@ -638,25 +1029,31 @@ ALTER TABLE `periodos`
 -- AUTO_INCREMENT de la tabla `permisos`
 --
 ALTER TABLE `permisos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=55;
 
 --
 -- AUTO_INCREMENT de la tabla `personas`
 --
 ALTER TABLE `personas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT de la tabla `productos`
 --
 ALTER TABLE `productos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+
+--
+-- AUTO_INCREMENT de la tabla `proveedores`
+--
+ALTER TABLE `proveedores`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `representantes`
 --
 ALTER TABLE `representantes`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT de la tabla `roles`
@@ -665,14 +1062,47 @@ ALTER TABLE `roles`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
+-- AUTO_INCREMENT de la tabla `status`
+--
+ALTER TABLE `status`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT de la tabla `tickets`
+--
+ALTER TABLE `tickets`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- Restricciones para tablas volcadas
 --
+
+--
+-- Filtros para la tabla `abastecer`
+--
+ALTER TABLE `abastecer`
+  ADD CONSTRAINT `fk_abas_prove` FOREIGN KEY (`proveedor_id`) REFERENCES `proveedores` (`id`),
+  ADD CONSTRAINT `fk_abas_usu` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`);
+
+--
+-- Filtros para la tabla `detalle_abastecer`
+--
+ALTER TABLE `detalle_abastecer`
+  ADD CONSTRAINT `fk_deta_abaste` FOREIGN KEY (`abastecer_id`) REFERENCES `abastecer` (`id`),
+  ADD CONSTRAINT `fk_deta_prod` FOREIGN KEY (`producto_id`) REFERENCES `productos` (`id`);
+
+--
+-- Filtros para la tabla `detalle_entrega`
+--
+ALTER TABLE `detalle_entrega`
+  ADD CONSTRAINT `fk_det_entre` FOREIGN KEY (`entrega_id`) REFERENCES `entregas` (`id`),
+  ADD CONSTRAINT `fk_det_prod` FOREIGN KEY (`producto_id`) REFERENCES `productos` (`id`);
 
 --
 -- Filtros para la tabla `docentes`
@@ -690,10 +1120,30 @@ ALTER TABLE `docente_curso`
   ADD CONSTRAINT `fk_dc_periodo` FOREIGN KEY (`periodo_id`) REFERENCES `periodos` (`id`);
 
 --
+-- Filtros para la tabla `entregas`
+--
+ALTER TABLE `entregas`
+  ADD CONSTRAINT `fk_entre_ticket` FOREIGN KEY (`ticket_id`) REFERENCES `tickets` (`id`),
+  ADD CONSTRAINT `fk_entre_usua` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`);
+
+--
 -- Filtros para la tabla `estudiantes`
 --
 ALTER TABLE `estudiantes`
   ADD CONSTRAINT `fk_estu_persona` FOREIGN KEY (`persona_id`) REFERENCES `personas` (`id`);
+
+--
+-- Filtros para la tabla `inventario`
+--
+ALTER TABLE `inventario`
+  ADD CONSTRAINT `fk_invent_movim` FOREIGN KEY (`movimiento_id`) REFERENCES `movimientos` (`id`);
+
+--
+-- Filtros para la tabla `movimientos`
+--
+ALTER TABLE `movimientos`
+  ADD CONSTRAINT `fk_movi_entrega` FOREIGN KEY (`entrega_id`) REFERENCES `entregas` (`id`),
+  ADD CONSTRAINT `fk_movi_usua` FOREIGN KEY (`usuario_id`) REFERENCES `usuarios` (`id`);
 
 --
 -- Filtros para la tabla `permisos`
@@ -715,6 +1165,15 @@ ALTER TABLE `representantes`
   ADD CONSTRAINT `fk_representante_especial` FOREIGN KEY (`especial_id`) REFERENCES `especiales` (`id`),
   ADD CONSTRAINT `fk_representante_parentesco` FOREIGN KEY (`parentesco_id`) REFERENCES `parentescos` (`id`),
   ADD CONSTRAINT `fk_representante_persona` FOREIGN KEY (`persona_id`) REFERENCES `personas` (`id`);
+
+--
+-- Filtros para la tabla `tickets`
+--
+ALTER TABLE `tickets`
+  ADD CONSTRAINT `fk_tick_estudi` FOREIGN KEY (`estudiante_id`) REFERENCES `estudiantes` (`id`),
+  ADD CONSTRAINT `fk_tick_hor_aten` FOREIGN KEY (`horario_atencion_id`) REFERENCES `horarios_atencion` (`id`),
+  ADD CONSTRAINT `fk_tick_repres` FOREIGN KEY (`representante_id`) REFERENCES `representantes` (`id`),
+  ADD CONSTRAINT `fk_tick_status` FOREIGN KEY (`status_id`) REFERENCES `status` (`id`);
 
 --
 -- Filtros para la tabla `usuarios`

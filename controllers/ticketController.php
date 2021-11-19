@@ -80,14 +80,16 @@ class TicketController
         echo json_encode($response);
     }
 
-    public function getOrden()
+    public function getOrden($params)
     {
-        $registro = Orden::where('estado', 'A')->orderBy('id', 'DESC')->first();
+        $tipo = $params['tipo'];
+        $registro = Orden::where('tipo',$tipo)->orderBy('id', 'DESC')->first();
         $response = [];
 
         if ($registro == null) {
             $response = [
                 'status' => true,
+                'tipo' => $tipo,
                 'mensaje' => 'Primer registro',
                 'orden' => '00001',
             ];
@@ -96,6 +98,7 @@ class TicketController
             $siguiente = '0000' . ($numero += 1);
             $response = [
                 'status' => true,
+                'tipo' => $tipo,
                 'mensaje' => 'Aumentando registro',
                 'orden' => $siguiente,
             ];
@@ -108,6 +111,7 @@ class TicketController
         $this->cors->corsJson();
         $tipoRequest = $request->input('orden');
         $num_orden = $tipoRequest->num_orden;
+        $tipo = $tipoRequest->tipo;
         $response = [];
 
         if ($tipoRequest == null) {
@@ -118,6 +122,7 @@ class TicketController
         } else {
             $nuevo = new Orden();
             $nuevo->num_orden = $num_orden;
+            $nuevo->tipo = $tipo;
             $nuevo->estado = 'A';
             $nuevo->save();
 

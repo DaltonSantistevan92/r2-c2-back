@@ -9,7 +9,7 @@ class Orden extends Model{
 
     public $timestamps = false;
     protected $table = "ordenes";
-    protected $filleable = ['num_orden','estado'];
+    protected $filleable = ['num_orden','tipo','estado'];
     
     
 }
