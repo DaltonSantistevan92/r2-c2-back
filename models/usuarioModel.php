@@ -5,6 +5,8 @@ require_once 'core/conexion.php';
 require_once 'models/personaModel.php';
 require_once 'models/rolModel.php';
 require_once 'models/abastecerModel.php';
+require_once 'models/entregasModel.php';
+
 
 
 use Illuminate\Database\Eloquent\Model;
@@ -28,5 +30,10 @@ class Usuario extends Model{
     //uno a muchos
     public function abastecer(){
         return $this->hasMany(Abastecer::class);
+    }
+
+    //uno a muchos
+    public function entrega(){
+        return $this->hasMany(Entrega::class);
     }
 }

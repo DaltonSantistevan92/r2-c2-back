@@ -10,11 +10,11 @@ class CategoriaAccion{
 
         switch ($metodo_http) {
             case 'get':
-                /* if($ruta == '/categoria/listar' && $params) {
-                    Route::get('/categoria/listar/:id', 'categoriaController@buscar',$params);
-                }else */
                 if($ruta == '/categoria/listar'){
                     Route::get('/categoria/listar', 'categoriaController@listar');
+                }else
+                if ($ruta == '/categoria/buscarCategoriaProducto' && $params) {
+                    Route::get('/categoria/buscarCategoriaProducto/:id', 'categoriaController@buscarCategoriaProducto', $params);
                 }
                 break;
 

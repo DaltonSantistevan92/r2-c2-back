@@ -5,6 +5,8 @@ require_once 'core/conexion.php';
 require_once 'models/estudianteModel.php';
 require_once 'models/representanteModel.php';
 require_once 'models/horario_atencionModel.php';
+require_once 'models/entregasModel.php';
+
 
 
 use Illuminate\Database\Eloquent\Model;
@@ -26,5 +28,10 @@ class Ticket extends Model{
 
     public function horario_atencion(){
         return $this->belongsTo(Horario_Atencion::class);
+    }
+
+     //uno a muchos
+     public function entrega(){
+        return $this->hasMany(Entrega::class);
     }
 }

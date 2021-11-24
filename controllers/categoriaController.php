@@ -34,4 +34,28 @@ class CategoriaController
         echo json_encode($response);
     }
 
+    public function buscarCategoriaProducto($params){
+        $this->cors->corsJson();
+        $categoria_id = intval($params['id']);
+        $response = [];
+
+        $categoria = Categoria::find($categoria_id);
+        if($categoria){
+            $categoria->producto;
+
+            $response = [
+                'status' => true,
+                'mensaje' => 'Si ahi datos',
+                'categoria' => $categoria
+            ];
+        }else{
+            $response = [
+                'status' => false,
+                'mensaje' => 'No ahi datos',
+                'categoria' => null
+            ];
+        }
+        echo json_encode($response);
+    }
+
 }

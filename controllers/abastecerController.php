@@ -5,7 +5,11 @@ require_once 'app/request.php';
 require_once 'core/conexion.php';
 require_once 'models/abastecerModel.php';
 require_once 'models/ordenModel.php';
+require_once 'models/movimientoModel.php';
 require_once 'controllers/detalleAbastecerController.php';
+require_once 'controllers/inventarioController.php';
+
+
 
 
 class AbastecerController
@@ -100,7 +104,9 @@ class AbastecerController
                     'status' => false,
                     'mensaje' => 'El codigo ya existe',
                     'abastecer' => null,
-                    'detalle' => null
+                    'detalle' => null,
+                    'movimiento' => null,
+                    'inventario' => null
                 ];
             }else{
                 if($nuevo->save()){
@@ -109,15 +115,21 @@ class AbastecerController
                     $detalleAbastecerController = new DetalleAbastecerController();
                     $extra = $detalleAbastecerController->guardar($nuevo->id,$detalles_abastecer);
                     
-                    //Insertar nueva Transaccion
+                    //Insertar a movimiento
+                    $nuevoMovimiento = $this->nuevoMovimiento($nuevo);
 
-                    //actualizar el inventario
+                    //actualizar el inventario 
+                    $inventarioController = new InventarioController; 
+                    $responseInventario = $inventarioController->guardarIngresoProducto($nuevoMovimiento->id, $detalles_abastecer, 'E');
+
 
                     $response = [
                         'status' => true,
                         'mensaje' => 'Guardando los datos',
                         'abastecer' => $nuevo,
-                        'detalle' => $extra 
+                        'detalle' => $extra,
+                        'movimiento' => $nuevoMovimiento,
+                        'inventario' => $responseInventario 
                     ];
                 }
             }
@@ -126,10 +138,25 @@ class AbastecerController
                 'status' => false,
                 'mensaje' => 'No hay datos para procesar',
                 'abastecer' => null,
-                'detalle' => null
+                'detalle' => null,
+                'movimiento' => null,
+                'inventario' => null
             ];
         }
         echo json_encode($response);
+    }
+
+
+    protected function nuevoMovimiento($nuevo){
+        $nuevoMovimiento = new Movimiento();
+
+        $nuevoMovimiento->abastecer_id = $nuevo->id;
+        $nuevoMovimiento->usuario_id = $nuevo->usuario_id;
+        $nuevoMovimiento->tipo = 'E';
+        $nuevoMovimiento->fecha = date('Y-m-d');
+        $nuevoMovimiento->save();
+
+        return $nuevoMovimiento;
     }
 }
 
