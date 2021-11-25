@@ -5,7 +5,6 @@ class Helper
 
     public static function save_file($file, $path)
     {
-
         $response = [];
         $imagen = $file;
         $target_path = $path;
@@ -31,7 +30,6 @@ class Helper
                 'direccion' => null,
             ];
         }
-
         return ($response);
     }
 
