@@ -18,8 +18,9 @@ class MateriasController
     }
 
     public function guardar(Request $request){
-        $this->cors->corsJson();
 
+        $this->cors->corsJson();
+        
         $materiaRequest = $request->input('materia');
         $response = [];
 
@@ -34,7 +35,7 @@ class MateriasController
             $nuevoMateria->duracion = $materiaRequest->duracion;
             $nuevoMateria->estado = 'A';
 
-            $existeMateria = Materias::where('materia',$materia)->get->first();
+            $existeMateria = Materias::where('materia',$materia)->get()->first();
 
             if($existeMateria){
                 $response = [
@@ -65,6 +66,43 @@ class MateriasController
             ];
         }
         echo json_encode($response);
+    }
+
+    public function datatable()
+    {
+        $this->cors->corsJson();
+        $materias = Materias::where('estado', 'A')->orderBy('materia','Asc')->get();
+        $data = [];
+        $i = 1;
+
+        foreach ($materias as $m) {
+            $icono = $m->estado == 'I' ? '<i class="fa fa-check-circle fa-lg"></i>' : '<i class="fa fa-trash fa-lg"></i>';
+            $clase = $m->estado == 'I' ? 'btn-success btn-sm' : 'btn-dark btn-sm';
+            $other = $m->estado == 'A' ? 0 : 1;
+
+            $botones = '<div class="btn-group">
+                            <button class="btn ' . $clase . '" onclick="eliminar_materia(' . $m->id . ',' . $other . ')">
+                                ' . $icono . '
+                            </button>
+                        </div>';
+
+            $data[] = [
+                0 => $i,
+                1 => $m->materia,
+                2 => $m->area->detalle,
+                3 => $m->duracion,
+                4 => $botones,
+            ];
+            $i++;
+        }
+
+        $result = [
+            'sEcho' => 1,
+            'iTotalRecords' => count($data),
+            'iTotalDisplayRecords' => count($data),
+            'aaData' => $data,
+        ];
+        echo json_encode($result);
     }
 
 

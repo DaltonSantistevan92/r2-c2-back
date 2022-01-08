@@ -15,6 +15,9 @@ class MateriasAccion{
                 }else
                 if($ruta == '/materias/listar'){
                     Route::get('/materias/listar', 'materiasController@listar');
+                }else
+                if($ruta == '/materias/datatable'){
+                    Route::get('/materias/datatable', 'materiasController@datatable');
                 }     
                 break;
 
