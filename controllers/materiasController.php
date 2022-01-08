@@ -34,7 +34,7 @@ class MateriasController
             $nuevoMateria->duracion = $materiaRequest->duracion;
             $nuevoMateria->estado = 'A';
 
-            $existeMateria = Materias::where('materia',$materia)->get->first();
+            $existeMateria = Materias::where('materia',$materia)->get()->first();
 
             if($existeMateria){
                 $response = [
