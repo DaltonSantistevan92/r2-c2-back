@@ -10,9 +10,12 @@ class MateriasAccion{
 
         switch ($metodo_http) {
             case 'get':
+                if($ruta == '/materias/listarId' && $params) {
+                    Route::get('/materias/listarId/:id', 'materiasController@listarId',$params);
+                }else
                 if($ruta == '/materias/listar' && $params) {
                     Route::get('/materias/listar/:id_area', 'materiasController@listar',$params);
-                }/else
+                }else
                 if($ruta == '/materias/datatable'){
                     Route::get('/materias/datatable', 'materiasController@datatable');
                 }     
