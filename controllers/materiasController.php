@@ -89,9 +89,8 @@ class MateriasController
             $data[] = [
                 0 => $i,
                 1 => $m->materia,
-                2 => $m->area->detalle,
-                3 => $m->duracion,
-                4 => $botones,
+                2 => $m->duracion,
+                3 => $botones,
             ];
             $i++;
         }
@@ -103,6 +102,33 @@ class MateriasController
             'aaData' => $data,
         ];
         echo json_encode($result);
+    }
+
+    public function eliminar(Request $request){
+        $this->cors->corsJson();
+        $requeMateria = $request->input('materia');
+        $id = intval($requeMateria->id);
+        $response = [];
+
+        $dataMateria = Materias::find($id);
+
+        if ($dataMateria) {
+            $dataMateria->estado = 'I';
+            $dataMateria->save();
+
+            $response = [
+                'status' => true,
+                'mensaje' => 'Se ha eliminado la materia',
+                'data' => $dataMateria
+            ];
+        } else {
+            $response = [
+                'status' => false,
+                'mensaje' => 'No Se ha eliminado la materia',
+                'data' => null
+            ];
+        }
+        echo json_encode($response);
     }
 
 
