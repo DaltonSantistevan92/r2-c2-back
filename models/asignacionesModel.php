@@ -15,13 +15,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Asignaciones extends Model{
 
-    //public $timestamps = false;
     protected $table = "asignaciones";
     protected $filleable = ['periodo_id','docente_id','materia_id','grado_id','paralelo_id','estado'];
     
     
     public function periodo(){
-        return $this->belongsTo(Periodo::class);
+        return $this->belongsTo(Periodo::class); 
     }
 
     public function docente(){
