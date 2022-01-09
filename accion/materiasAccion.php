@@ -24,6 +24,8 @@ class MateriasAccion{
             case 'post':
                 if ($ruta == '/materias/guardar') {
                     Route::post('/materias/guardar', 'materiasController@guardar');
+                }elseif ($ruta == '/materias/eliminar') {
+                    Route::post('/materias/eliminar', 'materiasController@eliminar');
                 }
                 break;
         }
