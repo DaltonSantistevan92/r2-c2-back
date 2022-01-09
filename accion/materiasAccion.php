@@ -11,11 +11,8 @@ class MateriasAccion{
         switch ($metodo_http) {
             case 'get':
                 if($ruta == '/materias/listar' && $params) {
-                    Route::get('/materias/listar/:id', 'materiasController@buscar',$params);
-                }else
-                if($ruta == '/materias/listar'){
-                    Route::get('/materias/listar', 'materiasController@listar');
-                }else
+                    Route::get('/materias/listar/:id_area', 'materiasController@listar',$params);
+                }/else
                 if($ruta == '/materias/datatable'){
                     Route::get('/materias/datatable', 'materiasController@datatable');
                 }     
@@ -27,7 +24,7 @@ class MateriasAccion{
                 }elseif ($ruta == '/materias/eliminar') {
                     Route::post('/materias/eliminar', 'materiasController@eliminar');
                 }
-                break;
+                break; 
         }
     }
 }
