@@ -17,11 +17,42 @@ class MateriasController
         $this->conexion = new Conexion();        
     }
 
+    public function listarId($params){
+        $this->cors->corsJson();
+        $response = [];
+
+        $id = intval($params['id']);
+        $materia = Materias::find($id);
+
+        if($materia){
+            $materia->area;
+            $response = [
+                'status' => true,
+                'mensaje' => 'existen datos',
+                'materia' => $materia
+            ];
+        }else{
+            $response = [
+                'status' => false,
+                'mensaje' => 'no existen datos',
+                'materia' => null
+            ];
+        }
+        echo json_encode($response);
+
+    }
+
     public function listar($params)
     {
         $this->cors->corsJson();
         $response = [];
         $area_id = intval($params['id_area']);
+
+        if($area_id == '0' || $area_id == 0){
+            $materias = Materias::where('estado', 'A')->orderBy('materia','Asc')->get();
+        }else{
+            $materias = Materias::where('estado', 'A')->where('area_id',$area_id)->orderBy('materia','Asc')->get();
+        }
 
         if($area_id == '0' || $area_id == 0){
             $materias = Materias::where('estado', 'A')->orderBy('materia','Asc')->get();

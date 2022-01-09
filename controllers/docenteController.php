@@ -20,6 +20,34 @@ class DocenteController
         $this->conexion = new Conexion();
     }
 
+    public function buscarDocente($params)
+    {
+        $this->cors->corsJson();
+        $texto = ucfirst($params['texto']);
+        $response = [];
+
+        $sql = "SELECT d.id,p.cedula,p.nombres,p.apellidos,p.telefono,p.correo FROM personas p
+        INNER JOIN docentes d ON d.persona_id = p.id
+        WHERE p.estado = 'A' and (p.cedula LIKE '$texto%' OR p.nombres LIKE '%$texto%' OR p.apellidos LIKE '%$texto%')";
+
+        $array = $this->conexion->database::select($sql);
+
+        if ($array) {
+            $response = [
+                'status' => true,
+                'mensaje' => 'Existen datos',
+                'docente' => $array,
+            ];
+        } else {
+            $response = [
+                'status' => false,
+                'mensaje' => 'No existen coincidencias',
+                'docente' => null,
+            ];
+        }
+        echo json_encode($response);
+    }
+
     public function guardar($docente, $id_persona)
     {
 
