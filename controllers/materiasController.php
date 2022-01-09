@@ -23,7 +23,11 @@ class MateriasController
         $response = [];
         $area_id = intval($params['id_area']);
 
-        $materias = Materias::where('estado', 'A')->where('area_id',$area_id)->orderBy('materia','Asc')->get();
+        if($area_id == '0' || $area_id == 0){
+            $materias = Materias::where('estado', 'A')->orderBy('materia','Asc')->get();
+        }else{
+            $materias = Materias::where('estado', 'A')->where('area_id',$area_id)->orderBy('materia','Asc')->get();
+        }
 
         if($materias->count() > 0){
             foreach($materias as $item){
@@ -33,6 +37,12 @@ class MateriasController
                 'status' => true,
                 'mensaje' => 'existen datos',
                 'materia' => $materias,
+            ];
+        }else{
+            $response = [
+                'status' => false,
+                'mensaje' => 'No existen datos',
+                'materia' => [],
             ];
         }
         echo json_encode($response);
