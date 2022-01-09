@@ -17,7 +17,7 @@ class AsignacionesAccion{
                     Route::get('/asignaciones/listar', 'asignacionesController@listar');
                 }else
                 if($ruta == '/asignaciones/datatable' && $params){
-                    Route::get('/asignaciones/datatable/:id_grado/:id_paralelo', 'asignacionesController@datatable',$params);
+                    Route::get('/asignaciones/datatable/:id_periodo/:id_grado/:id_paralelo', 'asignacionesController@datatable',$params);
                 }     
                 break;
 
