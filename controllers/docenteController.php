@@ -20,6 +20,31 @@ class DocenteController
         $this->conexion = new Conexion();
     }
 
+    public function listar(){
+        $this->cors->corsJson();
+        $response = [];
+
+        $docente = Docente::where('estado','A')->get();
+
+        if($docente){
+            foreach($docente as $d){
+                $d->persona;
+            }
+            $response = [
+                'status' => true,
+                'mensaje' => 'existen datos',
+                'docente' => $docente
+            ];
+        }else{
+            $response = [
+                'status' => false,
+                'mensaje' => 'no existen datos',
+                'docente' => null
+            ];
+        }
+        echo json_encode($response);
+    }
+
     public function buscarDocente($params)
     {
         $this->cors->corsJson();
