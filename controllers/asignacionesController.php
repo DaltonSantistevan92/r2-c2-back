@@ -76,11 +76,12 @@ class AsignacionesController
     }
 
     public function datatable($params){
-
+        $periodo_id = intval($params['id_periodo']);
         $grado_id = intval($params['id_grado']);
         $paralelo_id = intval($params['id_paralelo']);
 
         $asignacion = Asignaciones::where('estado', 'A')
+                                ->where('id_periodo',$periodo_id)
                                 ->where('grado_id', $grado_id)
                                 ->where('paralelo_id',$paralelo_id)->get();
                         
