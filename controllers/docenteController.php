@@ -24,7 +24,7 @@ class DocenteController
         $this->cors->corsJson();
         $response = [];
 
-        $docente = Docente::where('estado','A')->get();
+        $docente = Docente::where('estado','A')->where('guia','N')->orWhere('guia','A')->get();
 
         if($docente){
             foreach($docente as $d){
@@ -73,12 +73,13 @@ class DocenteController
         echo json_encode($response);
     }
 
-    public function guardar($docente, $id_persona)
+    public function guardar($docente, $id_persona, $guia)
     {
 
         if ($docente) {
             $nuevoDocente = new Docente();
             $nuevoDocente->persona_id = $id_persona;
+            $nuevoDocente->guia = $guia;
             $nuevoDocente->estado = 'A';
             $nuevoDocente->save();
 

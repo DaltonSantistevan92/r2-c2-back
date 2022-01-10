@@ -203,6 +203,8 @@ class UsuarioController{
         $especial_id = intval($representanteData->especial_id);
         $fecha_nac = $representanteData->fecha_nac;
 
+        $guia = $docenteData->guia;
+
 
         $response = [];
 
@@ -251,7 +253,7 @@ class UsuarioController{
                         // registrar en la tabla docentes
                         if ($user->rol_id == 2) {
                             //guardar en la tabla docentes el persona_id
-                            $responseDocente = $this->docenteCtrl->guardar($docenteData, $id_pers);
+                            $responseDocente = $this->docenteCtrl->guardar($docenteData,$id_pers,$guia);
 
                             if ($responseDocente == false) {
                                 $response = [
