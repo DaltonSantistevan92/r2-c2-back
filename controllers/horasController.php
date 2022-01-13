@@ -25,7 +25,7 @@ class HorasController
         $this->cors->corsJson();
         $response = [];
         
-        $hora = Horas::where('estado','A')->get();
+        $hora = Horas::where('estado','A')->orderBy('inicio','Asc')->get();
 
         if($hora){
             $response = [
