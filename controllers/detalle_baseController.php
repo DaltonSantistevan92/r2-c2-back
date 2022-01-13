@@ -20,21 +20,78 @@ class Detalle_BaseController
         $this->conexion = new Conexion();
     }
 
-    public function guardar($base_id, $detalles = [])
-    {
-        
-        if(count($detalles) > 0 ){
-            foreach($detalles as $deB){
-                $nuevo = new Detalle_Base();
-                $nuevo->base_id = intval($base_id);
-                $nuevo->hora_id = intval($deB->hora_id);
-                $nuevo->dia_id =  intval($deB->dia_id);
-                $nuevo->estado =  'A';
-                $nuevo->save();
+    public function listar($params){
+        $this->cors->corsJson();
+        $base_id = intval($params['base_id']);
+        $hora_id = intval($params['hora_id']);
 
+        $detaBase = Detalle_Base::where('base_id',$base_id)
+                                ->where('hora_id',$hora_id)->get();
+
+        if($detaBase){
+            $response = [
+                'status' => true,
+                'mensaje' => 'existen datos',
+                'hora' => $detaBase
+            ];
+        }else{
+            $response = [
+                'status' => false,
+                'mensaje' => 'no existen datos',
+                'hora' => null
+            ];
+        }                       
+        echo json_encode($response);
+    }
+
+
+    public function guardar(Request $request){
+        $this->cors->corsJson();
+        $response = [];
+
+        $detalleBaseRequest = $request->input('detalle_base');
+
+        if($detalleBaseRequest){
+            $base_id = intval($detalleBaseRequest->base_id);
+            $horas_id = intval($detalleBaseRequest->horas_id);
+
+            $nuevaDetalleBase = new Detalle_Base();
+            $nuevaDetalleBase->base_id = $base_id;
+            $nuevaDetalleBase->horas_id = $horas_id;
+            $nuevaDetalleBase->estado = 'A';
+
+            $existeDetalleBase = Detalle_Base::where('base_id',$base_id)
+                                            ->where('horas_id',$horas_id)->get()->first();
+
+            if($existeDetalleBase){
+                $response = [
+                    'status' => false,
+                    'mensaje' => 'El detalle de la base ya existe',
+                    'detalle_base' => null
+                ];
+            }else{
+                if($nuevaDetalleBase->save()){
+                    $response = [
+                        'status' => true,
+                        'mensaje' => 'El detalle base se registro correctamente',
+                        'detalle_base' => $nuevaDetalleBase
+                    ];
+                }else{
+                    $response = [
+                        'status' => false,
+                        'mensaje' => 'El detalle base no se pudo registrar',
+                        'detalle_base' => null
+                    ];
+                }
             }
+        }else{
+            $response = [
+                'status' => false,
+                'mensaje' => 'no hay datos',
+                'base' => null
+            ];
         }
-         return $nuevo;
+        echo json_encode($response);
     }
 
 }
