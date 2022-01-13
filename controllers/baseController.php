@@ -55,7 +55,6 @@ class BaseController
             
             $nuevaBase = new Base();
             $nuevaBase->nombre = $nombre;
-            $nuevaBase->horario_id = '';
             $nuevaBase->estado = 'A';
 
             $existeBase = Base::where('nombre',$nombre)->get()->first();
