@@ -7,7 +7,7 @@ require_once 'models/docenteModel.php';
 require_once 'models/materiasModel.php';
 require_once 'models/gradosModel.php';
 require_once 'models/paraleloModel.php';
-
+require_once 'models/detalle_baseModel.php';
 
 
 
@@ -37,6 +37,10 @@ class Asignaciones extends Model{
 
     public function paralelo(){
         return $this->belongsTo(Paralelo::class);
+    }
+
+    public function detalle_base(){
+        return $this->hasMany(Detalle_Base::class);
     }
 
 }

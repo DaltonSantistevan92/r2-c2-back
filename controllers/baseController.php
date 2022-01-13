@@ -49,37 +49,29 @@ class BaseController
         $response = [];
 
         $baseRequest = $request->input('base');
-        $detalleBaseRequest = $request->input('detalle_base');
 
         if($baseRequest){
             $nombre = ucfirst($baseRequest->nombre);
-            $horario_id = intval($baseRequest->horario_id);
-
+            
             $nuevaBase = new Base();
             $nuevaBase->nombre = $nombre;
-            $nuevaBase->horario_id = $horario_id;
+            $nuevaBase->horario_id = '';
             $nuevaBase->estado = 'A';
 
-            $existeBase = Base::where('nombre',$nombre)->where('horario_id',$horario_id)->get()->first();
+            $existeBase = Base::where('nombre',$nombre)->get()->first();
 
             if($existeBase){
                 $response = [
                     'status' => false,
-                    'mensaje' => 'El nombre y el horario de la base ya existe',
+                    'mensaje' => 'El nombre de la base ya existe',
                     'base' => null
                 ];
             }else{
                 if($nuevaBase->save()){
-
-                    //guarda a detalle base
-                    $detalleBaseController = new Detalle_BaseController();
-                    $extra = $detalleBaseController->guardar($nuevaBase->id,$detalleBaseRequest);
-
                     $response = [
                         'status' => true,
                         'mensaje' => 'La base se registro correctamente',
-                        'base' => $nuevaBase,
-                        'detalle_base' => $extra
+                        'base' => $nuevaBase
                     ];
                 }else{
                     $response = [

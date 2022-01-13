@@ -19,7 +19,7 @@ class BaseAccion{
                 if ($ruta == '/base/guardar') {
                     Route::post('/base/guardar', 'baseController@guardar');
                 }
-                break;
+                break; 
         }
     }
 }
