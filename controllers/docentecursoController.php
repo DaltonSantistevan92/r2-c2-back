@@ -156,7 +156,7 @@ class DocenteCursoController
         $dataDocenCurso = DocenteCurso::find($id);
 
         if ($requeDocenteCurso) {
-            if ($requeDocenteCurso) {
+            if ($dataDocenCurso) {
                 $dataDocenCurso->periodo_id = $periodo_id;
                 $dataDocenCurso->docente_id = $docente_id;
                 $dataDocenCurso->curso_id = $curso_id;

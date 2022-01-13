@@ -76,15 +76,13 @@ class AsignacionesController
     }
 
     public function datatable($params){
+        $this->cors->corsJson();
         $periodo_id = intval($params['id_periodo']);
         $grado_id = intval($params['id_grado']);
         $paralelo_id = intval($params['id_paralelo']);
-
-        $asignacion = Asignaciones::where('estado', 'A')
-                                ->where('id_periodo',$periodo_id)
-                                ->where('grado_id', $grado_id)
-                                ->where('paralelo_id',$paralelo_id)->get();
-                        
+          
+        $asignacion = Asignaciones::where('periodo_id',$periodo_id)->where('grado_id', $grado_id)->where('paralelo_id',$paralelo_id)->where('estado', 'A')->get();
+        
         $data = [];  
 
         if($asignacion){
@@ -122,5 +120,32 @@ class AsignacionesController
 
 
 
+    }
+
+    public function eliminar(Request $request){
+        $this->cors->corsJson();
+        $asignacionRequest = $request->input('asignacion');
+        $id = intval($asignacionRequest->id);
+        $response = [];
+
+        $dataAsignacion = Asignaciones::find($id);
+
+        if ($dataAsignacion) {
+            $dataAsignacion->estado = 'I';
+            $dataAsignacion->save();
+
+            $response = [
+                'status' => true,
+                'mensaje' => 'Se ha eliminado la asignacion',
+                'data' => $dataAsignacion
+            ];
+        } else {
+            $response = [
+                'status' => false,
+                'mensaje' => 'No se pudo eliminar',
+                'data' => null
+            ];
+        }
+        echo json_encode($response);
     }
 }

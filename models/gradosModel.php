@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Grados extends Model{
 
-    //public $timestamps = false;
+    public $timestamps = false;
     protected $table = "grados";
     protected $filleable = ['nombre_grado','estado'];
     

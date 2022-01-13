@@ -5,6 +5,8 @@ require_once 'core/conexion.php';
 require_once 'models/gradosModel.php';
 require_once 'models/periodoModel.php';
 require_once 'models/paraleloModel.php';
+require_once 'models/baseModel.php';
+
 
 
 use Illuminate\Database\Eloquent\Model;
@@ -25,6 +27,10 @@ class Horarios extends Model{
 
     public function paralelo(){
         return $this->belongsTo(Paralelo::class);
+    }
+
+    public function base(){
+        return $this->hasMany(Base::class);
     }
     
     

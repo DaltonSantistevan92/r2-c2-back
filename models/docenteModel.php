@@ -12,9 +12,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Docente extends Model{
 
-    public $timestamps = false;
+    
     protected $table = "docentes";
-    protected $filleable = ['persona_id','estado'];
+    protected $filleable = ['persona_id','guia','estado'];
     
     //uno a muchos
     public function docentecurso(){

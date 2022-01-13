@@ -19,16 +19,15 @@ class ParaleloAccion{
                 break;
 
             case 'post':
-               /*  if ($ruta == '/periodo/guardar') {
-                    Route::post('/periodo/guardar', 'periodoController@guardar');
+                if ($ruta == '/paralelo/guardar') {
+                    Route::post('/paralelo/guardar', 'paraleloController@guardar');
                 }else
-                if ($ruta == '/periodo/definir'){
-                    Route::post('/periodo/definir', 'periodoController@definir');
+                if ($ruta == '/paralelo/editar') {
+                    Route::post('/paralelo/editar', 'paraleloController@editar');
+                }else
+                if ($ruta == '/paralelo/eliminar') {
+                    Route::post('/paralelo/eliminar', 'paraleloController@eliminar');
                 }
-                else
-                if ($ruta == '/periodo/eliminar'){
-                    Route::post('/periodo/eliminar', 'periodoController@eliminar');
-                } */
                 break;
         }
     }
