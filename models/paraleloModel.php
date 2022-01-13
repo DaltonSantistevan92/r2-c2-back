@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Paralelo extends Model{
 
-    //public $timestamps = false;
+    public $timestamps = false;
     protected $table = "paralelos";
     protected $filleable = ['detalle','estado'];
     
@@ -26,5 +26,5 @@ class Paralelo extends Model{
 
     public function horario(){
         return $this->hasMany(Horarios::class);
-    }
+    } 
 }

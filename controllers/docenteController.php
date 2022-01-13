@@ -52,8 +52,8 @@ class DocenteController
         $response = [];
 
         $sql = "SELECT d.id,p.cedula,p.nombres,p.apellidos,p.telefono,p.correo FROM personas p
-        INNER JOIN docentes d ON d.persona_id = p.id
-        WHERE p.estado = 'A' and (p.cedula LIKE '$texto%' OR p.nombres LIKE '%$texto%' OR p.apellidos LIKE '%$texto%')";
+        INNER JOIN docentes d ON d.persona_id = p.id WHERE d.guia = 'N'
+        and p.estado = 'A' and (p.cedula LIKE '$texto%' OR p.nombres LIKE '%$texto%' OR p.apellidos LIKE '%$texto%')";
 
         $array = $this->conexion->database::select($sql);
 

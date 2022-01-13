@@ -27,8 +27,10 @@ class PeriodoAccion{
                 }else
                 if ($ruta == '/periodo/definir'){
                     Route::post('/periodo/definir', 'periodoController@definir');
-                }
-                else
+                }else
+                if ($ruta == '/periodo/editar'){
+                    Route::post('/periodo/editar', 'periodoController@editar');
+                }else
                 if ($ruta == '/periodo/eliminar'){
                     Route::post('/periodo/eliminar', 'periodoController@eliminar');
                 }

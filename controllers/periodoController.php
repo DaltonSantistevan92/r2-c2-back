@@ -136,8 +136,8 @@ class PeriodoController{
 
     public function eliminar(Request $request){
         $this->cors->corsJson();
-        $periodo = $request->input('periodo');
-        $id = $periodo->id;
+        $periodoRequest = $request->input('periodo');
+        $id = intval($periodoRequest->id);
         $response = [];
         
         $periodo = Periodo::find($id);
@@ -160,5 +160,40 @@ class PeriodoController{
 
     }
 
+    public function editar(Request $request){
+        $this->cors->corsJson();
+        $periodoRequest = $request->input('periodo');
+        $id = intval($periodoRequest->id);
+        $detalle = intval($periodoRequest->detalle);
+        $response = [];
 
-}
+        $dataPeriodo = Periodo::find($id);
+
+        if($periodoRequest){
+            if($dataPeriodo){
+                $dataPeriodo->detalle = $detalle;
+                $dataPeriodo->save();
+
+                $response = [
+                    'status' => true,
+                    'mensaje' => 'El Periodo se ha actualizado',
+                    'periodo' => $dataPeriodo,
+                ];
+            }else {
+                $response = [
+                    'status' => false,
+                    'mensaje' => 'No se puede actualizar el periodo',
+                ];
+            }
+        }else{
+            $response = [
+                'status' => false,
+                'mensaje' => 'No hay datos...!!'
+            ];
+        }
+        echo json_encode($response);
+
+    }
+
+
+} 
