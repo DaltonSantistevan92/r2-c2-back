@@ -14,7 +14,7 @@ class Detalle_Base extends Model{
 
     //public $timestamps = false;
     protected $table = "detalle_base";
-    protected $filleable = ['base_id','asignaciones_id','horas_id','estado'];
+    protected $filleable = ['base_id','asignaciones_id','horas_id', 'dia_id','estado'];
     
     public function base(){
         return $this->belongsTo(Base::class);
