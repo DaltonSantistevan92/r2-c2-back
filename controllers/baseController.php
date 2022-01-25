@@ -52,17 +52,19 @@ class BaseController
 
         if($baseRequest){
             $nombre = ucfirst($baseRequest->nombre);
+            $horario_id = intval($baseRequest->horario_id);
             
             $nuevaBase = new Base();
             $nuevaBase->nombre = $nombre;
+            $nuevaBase->horario_id = $horario_id ;
             $nuevaBase->estado = 'A';
 
-            $existeBase = Base::where('nombre',$nombre)->get()->first();
+            $existeBase = Base::where('horario_id', $horario_id)->get()->first();
 
             if($existeBase){
                 $response = [
                     'status' => false,
-                    'mensaje' => 'El nombre de la base ya existe',
+                    'mensaje' => 'El horario ya tiene asignado una base !',
                     'base' => null
                 ];
             }else{
@@ -90,6 +92,15 @@ class BaseController
         echo json_encode($response);
     }
 
-    
+    public function find($params){
+        $this->cors->corsJson();
+
+        $response = [];
+        $id = intval($params['id']);
+        $horario =  Horarios::find($id);
+
+        $horario->grado;    $horario->paralelo;
+        echo json_encode($horario);
+    }   
 
 }

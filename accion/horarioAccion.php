@@ -18,7 +18,10 @@ class HorarioAccion{
                 }else
                 if($ruta == '/horario/datatable' && $params){
                     Route::get('/horario/datatable/:id_periodo', 'horarioController@datatable' ,$params);
-                }     
+                }else
+                if($ruta == '/horario/info' && $params){
+                    Route::get('/horario/info/:id_periodo', 'horarioController@getByHorario' ,$params);
+                }   
                 break;
 
             case 'post':

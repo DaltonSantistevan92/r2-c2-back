@@ -68,6 +68,17 @@ class HorarioController
         echo json_encode($response);
     }
 
+    public function getByHorario($params){
+        $this->cors->corsJson();
+        $id_periodo = intval($params['id_periodo']);
+
+        $response = [];
+        $horarios = Horarios::where('periodo_id', $id_periodo)->get();
+    
+        if($horarios->count() > 0) $response = $horarios;
+        echo json_encode($response);
+    }
+
     public function datatable($params){
         $this->cors->corsJson();
 

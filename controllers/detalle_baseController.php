@@ -89,7 +89,6 @@ class Detalle_BaseController
         echo json_encode($response);
     }
 
-
     public function getHoras($params){
         $this->cors->corsJson();
         $response = [];
@@ -179,25 +178,42 @@ class Detalle_BaseController
 
     public function getHorario($params){
 
-        //$this->cors->corsJson();
+        $this->cors->corsJson();
         $response = [];
 
-        $base_id = intval($params['base_id']);
-        $base = Detalle_Base::where('base_id', $base_id)
-            ->groupBy('horas_id')->orderBy('horas_id', 'asc')->get();
+        $horario_id = intval($params['horario_id']);
+        $existe = Horarios::find($horario_id);
 
-        $response = []; $row = [];
+        $_b = Base::where('horario_id', $horario_id)->first();
 
-        if($base->count()){
-            $response = $base;
-
-            foreach($response as $b){
-                $horaDias = Detalle_Base::where('horas_id', $b->horas_id)->orderBy('dia_id')->get();
-                $aux = $horaDias;
-                $response[] = $aux;
-            }            
+        if($existe){
+            $base = Detalle_Base::where('base_id', $_b->id)
+                ->groupBy('horas_id')->orderBy('horas_id', 'asc')->get();
+    
+            $response = []; $row = [];  $horas = [];
+    
+            if($base->count()){
+                $response = $base;
+    
+                foreach($response as $b){
+                    $horas[] = $b->horas;
+                    $horaDias = Detalle_Base::select('asignaciones_id')->where('horas_id', $b->horas_id)->orderBy('dia_id')->get();
+    
+                    foreach($horaDias as $asig){
+                        $asig->asignaciones->docente->persona;
+                        $asig->asignaciones->materia;
+                    }
+    
+                    $aux = [
+                        'hora' => $b->horas,
+                        'dias' => $horaDias
+                    ];
+    
+                    $row[] =  $aux;
+                }            
+            }
         }
 
-        echo json_encode($response);
+        echo json_encode($row);
     }
 }

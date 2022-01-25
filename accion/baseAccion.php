@@ -10,9 +10,12 @@ class BaseAccion{
 
         switch ($metodo_http) {
             case 'get':
+                if($ruta == '/base/get' && $params){
+                    Route::get('/base/get/:id', 'baseController@find' ,$params);
+                }else       
                 if($ruta == '/base/listar') {
                     Route::get('/base/listar', 'baseController@listar');
-                }     
+                }
                 break;
 
             case 'post':
