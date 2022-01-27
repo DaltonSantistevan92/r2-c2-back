@@ -367,4 +367,34 @@ class ProductoController
         echo json_encode($response);
     }
 
+    public function caducarse($params){
+        $this->cors->corsJson();  $response = [];
+        $categoria_id = intval($params['categoria_id']);
+        $year = intval($params['year']);
+        $month = intval($params['month']);
+
+
+        $dataProducto = Producto::where('categoria_id', $categoria_id)
+                        ->whereYear('fecha_caducidad',$year)
+                        ->whereMonth('fecha_caducidad', $month)->get();
+
+        if(count($dataProducto) > 0){
+            foreach($dataProducto as $item){
+                $item->categoria;
+            }
+            $response = [
+                'status' => true,
+                'mensaje' => 'si hay datos',
+                'producto' => $dataProducto
+            ];
+
+        }else{
+            $response = [
+                'status' => false,
+                'mensaje' => 'no hay datos',
+                'producto' => null
+            ];
+        }
+        echo json_encode($response);
+    }
 }

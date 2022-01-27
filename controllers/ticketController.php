@@ -232,12 +232,157 @@ class TicketController
         }
         echo json_encode($response);
 
-
-
-
-
     }
 
+    public function ticketMasAtendidas($params){
+        $this->cors->corsJson();   
+        $inicio = $params['inicio'];
+        $fin = $params['fin'];
+        $representante_id = intval($params['representante_id']);
+
+        $entregados = 2;  $response = []; $data = []; $representantes_id = [];
+
+        $tickets = Ticket::where('status_id',$entregados)
+                        ->where('representante_id',$representante_id)
+                        ->where('fecha_entrega', '>=', $inicio)
+                        ->where('fecha_entrega', '<=', $fin)->orderBy('fecha_entrega')->get();
+
+       
+        for ($i=0; $i < count($tickets); $i++) {
+            $data[] = $tickets[$i];
+
+            foreach($data as $d){
+
+                $entrega = $d->entrega;
+          
+                $ticket_id = $d->id;
+                $repre_id = $d->representante_id;
+                $estudiante_id = $d->estudiante_id;
+                $estado_id = $d->status_id;
+            }
+
+
+            foreach ($entrega as $key) {
+                $entrega_id[] = $key->id;
+              
+            }
+
+            
+            $aux = [
+                'ticket_id' => $ticket_id,
+                'repre_id' => $repre_id,
+                'estudiante_id' => $estudiante_id,
+                'status_id' => $estado_id,
+                'cantidad' => 1,
+            ];
+            $dataAux[] = (object)$aux;
+            $representantes_id[] = $repre_id;
+            
+        }
+       // echo json_encode($dataAux); die();
+
+       /*  echo json_encode($representantes_id); 
+        echo json_encode($dataAux); die(); */
+
+        $noRepetidos = array_values(array_unique($representantes_id));
+       
+        $nuevoArray= [];    $cont = 0;
+
+        for ($k=0; $k < count($noRepetidos); $k++) { 
+            foreach($dataAux as $da){
+                if($da->repre_id === $noRepetidos[$k]){
+                    $cont += $da->cantidad;
+                    $status_id = $da->status_id;
+                    $estu_id[] = $da->estudiante_id;
+                    $ent = $entrega_id;
+
+                }
+            }
+
+            //echo json_encode($ent); die();
+     
+            $aux = [
+                'repre_id' => $noRepetidos[$k],
+                'estudiante_id' => $estu_id,
+                'cantidad' =>$cont,
+                'status_id' => $status_id,
+                
+            ];
+            $cont = 0;  
+            $nuevoArray[] = (object)$aux;
+            $aux =[];
+        }
+
+        //echo json_encode($nuevoArray);  die();
+        
+        $arrayRepresentantexId = $this->ordenarArray($nuevoArray);
+        $arrayRepresentantexId = Helper::invertir_array($arrayRepresentantexId); 
+
+        foreach($ent as $en){
+            $detalle = Detalle_Entrega::where('entrega_id',$en)->orderBy('id','Desc')->get();
+
+            foreach($detalle as $bu){
+                $h = $bu->producto_id;
+                $aux = [
+                    'producto_id' => $h,
+                ];
+                $producto[] = (object)$aux;
+            }
+        }
+
+        foreach($producto as $p){
+            $productodata = Producto::find($p->producto_id);
+            $aux = [
+                'nombre_producto' => $productodata->nombre,
+            ];
+            $dataProdu[] = (object)$aux;
+        }
+    
+        foreach ($arrayRepresentantexId as $key) {
+            $repre = Representante::find($key->repre_id);
+            $nombreCompletoRepre = $repre->persona->nombres. ' ' .$repre->persona->apellidos;
+            
+            $est = Estudiante::find($key->estudiante_id);
+            foreach($est as $e){
+                $nombreCompletoEstudiante[] =  $e->persona->nombres. ' ' .$e->persona->apellidos;
+
+            }
+
+            $estados = Status::find($key->status_id);
+            $estado  = $estados->detalle;   
+            $cantidad = $key->cantidad;
+
+            $aux = [
+                'representante' =>$nombreCompletoRepre,
+                'data' => [
+                    'estudiante' =>$nombreCompletoEstudiante,
+                    'producto' => $dataProdu
+
+                ],
+                'entregados' =>$cantidad,
+                'estado' =>$estado,                  
+
+            ];
+
+            $arrayFinal[] = (object)$aux;
+        }
+        
+        echo json_encode($arrayFinal);
+    }
+
+    function ordenarArray($array){
+        for ($i=1; $i < count($array); $i++) { 
+            for ($j=0; $j < count($array) - $i; $j++) { 
+                if($array[$j]->cantidad > $array[$j + 1]->cantidad){
+                    $chelas = $array[$j + 1];
+                    $array[$j + 1] = $array[$j];
+                    $array[$j] = $chelas;
+                }
+            }
+            
+        }
+        return $array;
+    }
 
 
     

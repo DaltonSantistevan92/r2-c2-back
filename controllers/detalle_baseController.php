@@ -109,10 +109,13 @@ class Detalle_BaseController
 
     public function getByHoras($params){
         $this->cors->corsJson();
+
         $hora_id = intval($params['hora_id']);
+        $base_id = intval($params['base_id']);
         $response = [];
 
-        $detalles = Detalle_Base::where('horas_id', $hora_id)->get();
+        $detalles = Detalle_Base::where('base_id', $base_id)->where('horas_id', $hora_id)->get();
+
         if($detalles->count() > 0){
             $response = $detalles;
             foreach($response as $det){
@@ -176,6 +179,18 @@ class Detalle_BaseController
         echo json_encode($response);
     }
 
+    public function getHorasV2($params){
+        $_b_id = intval($params['base_id']);
+        $response = false;
+
+        $base = Detalle_Base::where('base_id', $_b_id)
+                ->groupBy('horas_id')->orderBy('horas_id', 'asc')->first();
+
+        if($base)   $response = $base;
+
+        return $base;
+    }
+
     public function getHorario($params){
 
         $this->cors->corsJson();
@@ -197,11 +212,14 @@ class Detalle_BaseController
     
                 foreach($response as $b){
                     $horas[] = $b->horas;
-                    $horaDias = Detalle_Base::select('asignaciones_id')->where('horas_id', $b->horas_id)->orderBy('dia_id')->get();
+                    $horaDias = Detalle_Base::select('asignaciones_id')
+                        ->where('base_id', $_b->id)->where('horas_id', $b->horas_id)->orderBy('dia_id')->get();
     
                     foreach($horaDias as $asig){
-                        $asig->asignaciones->docente->persona;
-                        $asig->asignaciones->materia;
+                        if($asig->asignaciones != null){
+                            $asig->asignaciones->docente->persona;
+                            $asig->asignaciones->materia;
+                        }
                     }
     
                     $aux = [

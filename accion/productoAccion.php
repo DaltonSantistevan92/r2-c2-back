@@ -24,6 +24,9 @@ class ProductoAccion{
                 }else
                 if($ruta == '/producto/buscarProducto' && $params){
                     Route::get('/producto/buscarProducto/:texto', 'productoController@buscarProducto',$params);
+                }else
+                if($ruta == '/producto/caducarse' && $params){
+                    Route::get('/producto/caducarse/:categoria_id/:year/:month', 'productoController@caducarse',$params);
                 }
                 break;
 

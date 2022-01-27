@@ -13,7 +13,8 @@ class CategoriaController
         $this->cors = new Cors();
     }
 
-    public function listar(){
+    public function listar()
+    {
         $this->cors->corsJson();
         $categoria = Categoria::where('estado', 'A')->get();
         $response = [];
@@ -34,13 +35,14 @@ class CategoriaController
         echo json_encode($response);
     }
 
-    public function buscarCategoriaProducto($params){
+    public function buscarCategoriaProducto($params)
+    {
         $this->cors->corsJson();
         $categoria_id = intval($params['id']);
         $response = [];
 
         $categoria = Categoria::find($categoria_id);
-        if($categoria){
+        if ($categoria) {
             $categoria->producto;
 
             $response = [
@@ -48,7 +50,7 @@ class CategoriaController
                 'mensaje' => 'Si ahi datos',
                 'categoria' => $categoria
             ];
-        }else{
+        } else {
             $response = [
                 'status' => false,
                 'mensaje' => 'No ahi datos',
@@ -58,4 +60,28 @@ class CategoriaController
         echo json_encode($response);
     }
 
+
+    public function listarViatico()
+    {
+        $this->cors->corsJson();
+        $insumos = 1;
+        $response = [];
+
+        $categoria = Categoria::where('id', $insumos)->where('estado', 'A')->get();
+
+        if ($categoria) {
+            $response = [
+                'status' => true,
+                'mensaje' => 'Existem datos',
+                'data' => $categoria
+            ];
+        } else {
+            $response = [
+                'status' => false,
+                'mensaje' => 'No existem datos',
+                'data' => []
+            ];
+        }
+        echo json_encode($response);
+    }
 }
