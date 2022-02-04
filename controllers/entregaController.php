@@ -202,10 +202,56 @@ class EntregaController
         return $nuevoMovimiento;
     }
 
+    public function getEntrega_v2($params){
+        $this->cors->corsJson();
+
+        $inicio = $params['inicio'];
+        $fin = $params['fin'];
+        $usuario_id = intval($params['usuario_id']);
+
+        $entregas = Entrega::where('fecha', '>=', $inicio)
+        ->where('fecha', '<=', $fin)
+        ->where('usuario_id',$usuario_id)->get();
+
+        $data = [];
+
+        if($entregas->count() > 0){
+
+            foreach($entregas as $ent){
+                //Get codigo
+                $code = $ent->ticket->codigo;
+                //Get representante
+                $rep = $ent->ticket->representante->persona;
+                $names = $rep->nombres.' '.$rep->apellidos;
+                //Get estudiantes
+                $est = $ent->ticket->estudiante->persona;
+                $namesEst = $est->nombres.' '.$est->apellidos;
+                $namesEst = ucwords(strtolower($namesEst));
+
+                //Get Productos
+                $productos = $ent->detalle_entrega;
+                foreach($productos as $p) $p->producto;
+
+                $auxPrim = [
+                    'codigo' => $code,
+                    'representante' => $names,
+                    'estudiante' => $namesEst,
+                    'cantidad' => $productos->count(),
+                    'productos' => $productos
+                ];
+    
+                $data[] = $auxPrim;
+            }
+        }
+
+        echo json_encode($data);
+    }
+
     public function getEntrega($params){
         $this->cors->corsJson();
 
         $inicio = $params['inicio'];
+
         $fin = $params['fin'];
         $usuario_id = intval($params['usuario_id']);
 
@@ -220,14 +266,15 @@ class EntregaController
             $estu = $ent->ticket->estudiante->persona->nombres.' '.$ent->ticket->estudiante->persona->apellidos;
 
             foreach($det_ent as $item){
+                $productos[] = $item->producto;
 
                 $aux = [
                     'producto_id' => $item->producto_id,
                     'cantidad' => $item->cantidad,
                     'codigo' => $codigo,
                     'representante' => $repre,
-                    'estudiante' => $estu
-
+                    'estudiante' => $estu,
+                    'productos' => $productos
                 ];
 
                 $producto_id[] = (object)$aux;
