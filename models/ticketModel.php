@@ -15,7 +15,8 @@ class Ticket extends Model{
 
     public $timestamps = false;
     protected $table = "tickets";
-    protected $filleable = ['estudiante_id','representante_id','horario_atencion_id','codigo','fecha','fecha_entrega','privilegio','orden','estado'];
+    protected $filleable = ['estudiante_id','representante_id','horario_atencion_id','codigo',
+    'fecha','fecha_entrega','privilegio','orden','status_id', 'usuario_id', 'estado'];
 
     //muchos a uno
     public function estudiante(){

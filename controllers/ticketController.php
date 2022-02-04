@@ -3,6 +3,8 @@ require_once 'app/cors.php';
 require_once 'app/helper.php';
 require_once 'models/ticketModel.php';
 require_once 'models/ordenModel.php';
+require_once 'models/statusModel.php';
+
 
 class TicketController
 {
@@ -42,12 +44,15 @@ class TicketController
 
     }
 
-    public function listar()
+    public function listar($params)
     {
         $this->cors->corsJson();
+        $user_id = intval($params['user_id']);
         $response = [];
 
-        $dataTicket = Ticket::where('estado', 'A')->where('status_id',1)->orderBy('id', 'DESC')->get();
+        $dataTicket = Ticket::where('estado', 'A')
+        ->where('status_id',1)->where('usuario_id', $user_id)
+        ->orderBy('id', 'DESC')->get();
 
         foreach ($dataTicket as $dt) {
             $aux = [
@@ -61,14 +66,16 @@ class TicketController
         echo json_encode($response);
     }
 
-    public function listaEntregado()
+    public function listaEntregado($params)
     {
         $this->cors->corsJson();
+        $user_id = intval($params['user_id']);
         $response = [];
 
         $dataTicket = Ticket::where('estado', 'A')
                     ->where('status_id',2)
                     ->where('privilegio', 'N')
+                    ->where('usuario_id', $user_id)
                     ->orderBy('id', 'DESC')->get();
 
         foreach ($dataTicket as $dt) {
@@ -165,6 +172,7 @@ class TicketController
             $nuevoTicket->orden = $orden;
             $nuevoTicket->status_id = 1; //pendiente
             $nuevoTicket->estado = 'A';
+            $nuevoTicket->usuario_id = intval($ticketRequest->usuario_id);
 
             $existeOrden = Ticket::where('orden', $orden)->get()->first();
 
@@ -277,9 +285,10 @@ class TicketController
             ];
             $dataAux[] = (object)$aux;
             $representantes_id[] = $repre_id;
+           
             
         }
-       // echo json_encode($dataAux); die();
+        //echo json_encode($entrega_id); die();
 
        /*  echo json_encode($representantes_id); 
         echo json_encode($dataAux); die(); */

@@ -3,13 +3,11 @@ require_once 'app/cors.php';
 require_once 'models/areaModel.php';
 
 
-class AreaController
-{
+class AreaController{
 
     private $cors;
 
-    public function __construct()
-    {
+    public function __construct(){
         $this->cors = new Cors();
     }
 
@@ -34,4 +32,55 @@ class AreaController
         echo json_encode($response);
     }
 
+    public function guardar(Request $request){
+
+        $this->cors->corsJson();
+        $dataArea = $request->input('area');
+
+        $existe = Area::where('detalle', $dataArea->detalle)->first();
+        $response = [];
+
+        if($existe){
+            $response = [
+                'status' => false,
+                'message' => 'El area ingresada ya existe !!'
+            ];
+        }else{
+            $new = new Area();
+            $new->detalle = trim(ucfirst($dataArea->detalle));
+            $new->estado = 'A';
+            $new->save();
+
+            $response = [
+                'status' => true,
+                'message' => 'Area registrada correctamente'
+            ];
+        }
+
+        echo json_encode($response);
+    }
+
+    public function delete(Request $request){
+
+        $dataArea = $request->input('area');
+
+        $area = Area::find(intval($dataArea->id));
+        $response = [];
+
+        if($area){
+            $area->estado = 'I';
+            $area->save();
+
+            $response = [
+                'status' => true,
+                'message' => 'Area eliminada !'
+            ];
+        }else{
+            $response = [
+                'status' => false,
+                'message' => 'El area no se encuentra'
+            ];
+        }   
+        echo json_encode($response);
+    }
 }

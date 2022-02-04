@@ -87,9 +87,7 @@ class Route
     {
         //echo "Soy el metodo post<br>";
         $url = new Url();
-/* 
-        var_dump($ruta);
-        var_dump($url->getRuta()); die(); */
+
         if ($url->getRuta() == $ruta) {
             if (!$files) {
                 $request = new Request();

@@ -22,7 +22,7 @@ class RepresentanteAccion
                 if ($ruta == '/representante/datatable') {
                     Route::get('/representante/datatable', 'representanteController@dataTable');
                 } else
-                if ($ruta == '/representante/buscarRepresentante' & $params) {
+                if ($ruta == '/representante/buscarRepresentante' && $params) {
                     Route::get('/representante/buscarRepresentante/:texto', 'representanteController@buscarRepresentante', $params);
                 }else {
                     ErrorClass::e(404, "La ruta no existe");

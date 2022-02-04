@@ -15,8 +15,14 @@ class AreaAccion{
                 }
                 break;
 
-            
-
+            case 'post':
+                if($ruta == '/area/guardar'){
+                    Route::post('/area/guardar', 'areaController@guardar');
+                }else
+                if($ruta == '/area/delete'){
+                    Route::post('/area/delete', 'areaController@delete');
+                }
+                break;
         }
     }
 }

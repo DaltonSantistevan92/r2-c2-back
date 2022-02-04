@@ -143,10 +143,13 @@ class MateriasController
             $other = $m->estado == 'A' ? 0 : 1;
 
             $botones = '<div class="btn-group">
-                            <button class="btn ' . $clase . '" onclick="eliminar_materia(' . $m->id . ',' . $other . ')">
-                                ' . $icono . '
-                            </button>
-                        </div>';
+                <button class="btn btn-warning" onclick="editar_materia($m->id)">
+                    <i class="fas fa-edit"></i>
+                </button>
+                <button class="btn ' . $clase . '" onclick="eliminar_materia(' . $m->id . ',' . $other . ')">
+                    ' . $icono . '
+                </button>
+            </div>';
 
             $data[] = [
                 0 => $i,

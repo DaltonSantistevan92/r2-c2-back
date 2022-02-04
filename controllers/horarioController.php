@@ -36,6 +36,9 @@ class HorarioController
             $nuevoHorario->estado = 'A';
 
             $existeHorario = Horarios::where('nombre_horario',$nombre_horario)->get()->first();
+            $repeatHorario = Horarios::where('grado_id', $grado_id)
+                ->where('periodo_id', $periodo_id)
+                ->where('paralelo_id', $paralelo_id)->first();
             
             if($existeHorario){
                 $response = [
@@ -43,7 +46,15 @@ class HorarioController
                     'mensaje' => 'El Horario ya existe',
                     'horario' => null
                 ];
-            }else{
+            }else
+            if($repeatHorario){
+                $response = [
+                    'status' => false,
+                    'mensaje' => 'El Horario ya existe',
+                    'horario' => null
+                ];
+            }
+            else{
                 if($nuevoHorario->save()){
                     $response = [
                         'status' => true,

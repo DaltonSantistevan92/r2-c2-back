@@ -15,11 +15,17 @@ class DocenteAccion{
                 }else
                 if($ruta == '/docente/listar'){
                     Route::get('/docente/listar', 'docenteController@listar');
+                }else
+                if($ruta == '/docente/datatable'){
+                    Route::get('/docente/datatable', 'docenteController@datatale');
                 }
                 break;
 
-            
-
+            case 'post':
+                if($ruta == '/docente/eliminar'){
+                    Route::post('/docente/eliminar', 'docenteController@eliminar');
+                }
+                break;
         }
     }
 }
