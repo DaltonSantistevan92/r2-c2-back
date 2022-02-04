@@ -21,6 +21,9 @@ class EntregaAccion{
                 }else
                 if($ruta == '/entrega/getOrden' && $params){
                     Route::get('/entrega/getOrden/:tipo', 'entregaController@getOrden',$params); 
+                }else
+                if($ruta == '/entrega/getEntrega' && $params){
+                    Route::get('/entrega/getEntrega/:inicio/:fin/:usuario_id', 'entregaController@getEntrega',$params); 
                 }     
                 break;
 

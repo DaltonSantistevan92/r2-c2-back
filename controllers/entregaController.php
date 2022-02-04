@@ -2,6 +2,7 @@
 
 require_once 'app/cors.php';
 require_once 'app/request.php';
+require_once 'app/helper.php';
 require_once 'core/conexion.php';
 require_once 'models/entregasModel.php';
 require_once 'models/ordenModel.php';
@@ -199,6 +200,107 @@ class EntregaController
         $nuevoMovimiento->save();
 
         return $nuevoMovimiento;
+    }
+
+    public function getEntrega($params){
+        $this->cors->corsJson();
+
+        $inicio = $params['inicio'];
+        $fin = $params['fin'];
+        $usuario_id = intval($params['usuario_id']);
+
+        $entrega = Entrega::where('fecha', '>=', $inicio)
+                        ->where('fecha', '<=', $fin)
+                        ->where('usuario_id',$usuario_id)->get();
+        
+        foreach($entrega as $ent){
+            $det_ent = $ent->detalle_entrega;
+            $codigo = $ent->codigo;
+            $repre = $ent->ticket->representante->persona->nombres.' '.$ent->ticket->representante->persona->apellidos;
+            $estu = $ent->ticket->estudiante->persona->nombres.' '.$ent->ticket->estudiante->persona->apellidos;
+
+            foreach($det_ent as $item){
+
+                $aux = [
+                    'producto_id' => $item->producto_id,
+                    'cantidad' => $item->cantidad,
+                    'codigo' => $codigo,
+                    'representante' => $repre,
+                    'estudiante' => $estu
+
+                ];
+
+                $producto_id[] = (object)$aux;
+                $proSecond[] = $item->producto_id;
+            }
+        }
+
+        //echo json_encode($producto_id); die();
+
+
+            $no_repetidos = array_values(array_unique($proSecond));
+            $nuevo_array = [];
+            $contador = 0;
+
+            //Algoritmo para contar y eliminar los elementos repetidos de un array
+            for ($i = 0; $i < count($no_repetidos); $i++) {
+                foreach ($producto_id as $item) {
+                    if ($item->producto_id === $no_repetidos[$i]) {
+                        $contador += $item->cantidad;
+                        $_codigo = $item->codigo;
+                        $_repre = $item->representante;
+                        $_estu = $item->estudiante;
+
+                        $producto = Producto::find($item->producto_id);
+                        $producto->nombre;
+                        
+                    }
+                }
+                $aux = [
+                    'producto_id' => $no_repetidos[$i],
+                    'nombreProducto' => $producto,
+                    'cantidad' => $contador,
+                    'codigo' => $_codigo,
+                    'representante' => $_repre,
+                    'estudiante' => $_estu
+
+                ];
+
+                $contador = 0;
+                $nuevo_array[] = (object) $aux;
+                $aux = [];
+            }
+            
+            $array_productos = $this->ordenar_array($nuevo_array);
+            $array_productos = Helper::invertir_array($array_productos);
+
+            
+            $response = [
+                'lista' => [
+                    'data' => $array_productos
+                ]
+            ];
+
+            echo json_encode($response); die();
+
+
+
+    }
+
+    public function ordenar_array($array)
+    {
+        for ($i = 1; $i < count($array); $i++) {
+            for ($j = 0; $j < count($array) - $i; $j++) {
+                if ($array[$j]->cantidad > $array[$j + 1]->cantidad) {
+
+                    $k = $array[$j + 1];
+                    $array[$j + 1] = $array[$j];
+                    $array[$j] = $k;
+                }
+            }
+        }
+
+        return $array;
     }
 
     
